@@ -1,7 +1,6 @@
 package ee.vehicleBooking.vehicleBooking.service;
 
 import ee.vehicleBooking.vehicleBooking.model.Booking;
-import ee.vehicleBooking.vehicleBooking.model.Client;
 import ee.vehicleBooking.vehicleBooking.repository.BookingRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

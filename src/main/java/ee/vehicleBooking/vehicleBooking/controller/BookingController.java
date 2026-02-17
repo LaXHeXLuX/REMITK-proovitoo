@@ -1,7 +1,6 @@
 package ee.vehicleBooking.vehicleBooking.controller;
 
 import ee.vehicleBooking.vehicleBooking.model.Booking;
-import ee.vehicleBooking.vehicleBooking.model.Client;
 import ee.vehicleBooking.vehicleBooking.service.BookingService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
