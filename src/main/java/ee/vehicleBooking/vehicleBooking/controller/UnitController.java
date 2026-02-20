@@ -18,12 +18,12 @@ public class UnitController {
     }
 
     @GetMapping
-    public List<Unit> getAllUnits() {
-        return unitService.getAllUnits();
+    public List<Unit> getAll() {
+        return unitService.getAll();
     }
 
-    @GetMapping("/available")
-    public List<Unit> getAvailableUnits() {
-        return unitService.getAvailableUnits();
+    @GetMapping("/bookable")
+    public List<Unit> getBookableUnits() {
+        return unitService.getBookable();
     }
 }

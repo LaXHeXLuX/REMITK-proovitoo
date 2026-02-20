@@ -16,7 +16,7 @@ public class BookingService {
         this.bookingRepository = bookingRepository;
     }
 
-    public List<Booking> getAllBookings() {
+    public List<Booking> getAll() {
         return bookingRepository.findAll();
     }
 

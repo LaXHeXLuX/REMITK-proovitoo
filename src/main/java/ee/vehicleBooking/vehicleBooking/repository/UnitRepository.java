@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface UnitRepository extends JpaRepository<Unit, Long> {
     @Query("SELECT u FROM Unit u WHERE u.bookable = true")
-    List<Unit> findAvailable();
+    List<Unit> findBookable();
 }

@@ -16,11 +16,11 @@ public class UnitService {
         this.unitRepository = unitRepository;
     }
 
-    public List<Unit> getAllUnits() {
+    public List<Unit> getAll() {
         return unitRepository.findAll();
     }
 
-    public List<Unit> getAvailableUnits() {
-        return unitRepository.findAvailable();
+    public List<Unit> getBookable() {
+        return unitRepository.findBookable();
     }
 }

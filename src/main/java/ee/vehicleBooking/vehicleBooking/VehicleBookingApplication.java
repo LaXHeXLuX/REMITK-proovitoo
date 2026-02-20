@@ -67,12 +67,12 @@ public class VehicleBookingApplication {
         return client;
     }
 
-    private static Booking booking(Client client, Unit unit, LocalDateTime start, LocalDateTime end, boolean paid) {
+    private static Booking booking(Client client, Unit unit, LocalDateTime bookingStart, LocalDateTime bookingEnd, boolean paid) {
         Booking booking = new Booking();
         booking.setClient(client);
         booking.setUnit(unit);
-        booking.setBookingStart(start);
-        booking.setBookingEnd(end);
+        booking.setBookingStart(bookingStart);
+        booking.setBookingEnd(bookingEnd);
         booking.setPaid(paid);
         return booking;
     }

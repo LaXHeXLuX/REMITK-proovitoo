@@ -23,10 +23,10 @@ class BookingServiceTest {
     private BookingService bookingService;
 
     @Test
-    void getAllBookings() {
+    void getAll() {
         List<Booking> mockList = List.of(new Booking(), new Booking());
         Mockito.when(bookingRepository.findAll()).thenReturn(mockList);
-        assertEquals(mockList, bookingService.getAllBookings());
+        assertEquals(mockList, bookingService.getAll());
     }
 
     @Test
@@ -34,6 +34,6 @@ class BookingServiceTest {
     }
 
     @Test
-    void createBooking() {
+    void create() {
     }
 }
