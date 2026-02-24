@@ -1,5 +1,4 @@
 CREATE SCHEMA IF NOT EXISTS vehicle_booking;
-
 SET search_path TO vehicle_booking;
 
 CREATE TABLE cars (
