@@ -7,8 +7,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class utils {
-    public static final Car car1 = car("A1", "BestCar", 5, FuelType.elekter, TransmissionType.automaat, 2026);
-    public static final Car car2 = car("Z0", "WorstCar", 2, FuelType.diisel, TransmissionType.manuaal, 2000);
+    public static final Car car1 = car("A1", "BestCar", 5, FuelType.electric, TransmissionType.automatic, 2026);
+    public static final Car car2 = car("Z0", "WorstCar", 2, FuelType.diesel, TransmissionType.manual, 2000);
 
     public static final Client client1 = client("Alice Adams", LocalDate.of(2000, 1, 1));
     public static final Client client2 = client("Bob Bucket", LocalDate.of(1950, 5, 5));
