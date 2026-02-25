@@ -5,10 +5,10 @@ CREATE TABLE cars (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     company VARCHAR(255) NOT NULL,
-    number_of_seats INTEGER NOT NULL CHECK (number_of_seats >= 0),
+    number_of_seats INTEGER NOT NULL CHECK (number_of_seats > 0),
     fuel VARCHAR(20) NOT NULL,
     transmission VARCHAR(20) NOT NULL,
-    year INTEGER NOT NULL
+    year INTEGER NOT NULL CHECK (year > 0)
 );
 
 CREATE TABLE units (
