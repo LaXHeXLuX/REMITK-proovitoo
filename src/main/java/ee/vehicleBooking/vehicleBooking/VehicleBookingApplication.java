@@ -16,8 +16,6 @@ public class VehicleBookingApplication {
 
     @Bean
     public CommandLineRunner seedData(UnitRepository unitRepository) {
-        return _ -> {
-            System.out.println("Up and running! Current unit count: " + unitRepository.count());
-        };
+        return _ -> System.out.println("Up and running! Current unit count: " + unitRepository.count());
     }
 }
