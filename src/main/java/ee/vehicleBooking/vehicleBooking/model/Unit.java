@@ -1,6 +1,7 @@
 package ee.vehicleBooking.vehicleBooking.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;
@@ -21,6 +22,7 @@ public class Unit {
     private Vehicle vehicle;
 
     @Column(nullable = false)
+    @NotNull(message = "Unit must have \"bookable\" flag (key: bookable)")
     private Boolean bookable = true;
 
     @Column(name = "licence_plate", length = 20)

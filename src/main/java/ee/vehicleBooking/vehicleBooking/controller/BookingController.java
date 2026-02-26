@@ -2,6 +2,7 @@ package ee.vehicleBooking.vehicleBooking.controller;
 
 import ee.vehicleBooking.vehicleBooking.model.Booking;
 import ee.vehicleBooking.vehicleBooking.service.BookingService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<Booking> create(@RequestBody Booking booking) {
+    public ResponseEntity<Booking> create(@Valid @RequestBody Booking booking) {
         return ResponseEntity.status(HttpStatus.CREATED).body(bookingService.save(booking));
     }
 

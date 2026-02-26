@@ -1,6 +1,7 @@
 package ee.vehicleBooking.vehicleBooking.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
@@ -17,18 +18,23 @@ public class Booking {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
+    @NotNull(message = "Booking must have a client (key: client)")
     private Client client;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_id", nullable = false)
+    @NotNull(message = "Booking must have a unit (key: unit)")
     private Unit unit;
 
     @Column(name = "booking_start", nullable = false)
+    @NotNull(message = "Booking must have a start time (key: bookingStart)")
     private LocalDateTime bookingStart;
 
     @Column(name = "booking_end", nullable = false)
+    @NotNull(message = "Booking must have an end time (key: bookingEnd)")
     private LocalDateTime bookingEnd;
 
     @Column(nullable = false)
-    private Boolean paid;
+    @NotNull(message = "Booking must have \"paid\" flag (key: paid)")
+    private Boolean paid = false;
 }
