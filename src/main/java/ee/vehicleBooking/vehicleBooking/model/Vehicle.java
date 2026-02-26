@@ -6,7 +6,7 @@ import lombok.Setter;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "vehicle", schema = "vehicle_booking")
+@Table(name = "vehicles", schema = "vehicle_booking")
 @Getter
 @Setter
 public class Vehicle {
