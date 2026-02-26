@@ -13,28 +13,26 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tools.jackson.databind.exc.InvalidFormatException;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     public record ApiErrorResponse(
             String timestamp,
-            int status,
-            String error,
             String message,
             String path,
-            Map<String, String> errors
+            List<String> errors
     ) {}
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        Map<String, String> errors = new HashMap<>();
+        List<String> errors = new ArrayList<>();
 
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
             String message = "Invalid value";
             if (fieldError.getDefaultMessage() != null) message = fieldError.getDefaultMessage();
-            errors.put(fieldError.getField(), message);
+            errors.add(message);
         }
 
         return buildResponse(HttpStatus.BAD_REQUEST, "Validation failed", request, errors);
@@ -51,26 +49,24 @@ public class GlobalExceptionHandler {
                     cause.getTargetType());
         }
 
-        return buildResponse(HttpStatus.BAD_REQUEST, message, request, null);
+        return buildResponse(HttpStatus.BAD_REQUEST, message, request, List.of(HttpMessageNotReadableException.class.toString()));
     }
 
     @ExceptionHandler(TransientPropertyValueException.class)
     public ResponseEntity<ApiErrorResponse> handleTransient(TransientPropertyValueException ex, HttpServletRequest request) {
         String message = String.format("Field '%s' requires a valid existing ID", ex.getPropertyName());
-        return buildResponse(HttpStatus.BAD_REQUEST, message, request, null);
+        return buildResponse(HttpStatus.BAD_REQUEST, message, request, List.of(TransientPropertyValueException.class.toString()));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiErrorResponse> handleDataIntegrity(DataIntegrityViolationException ex, HttpServletRequest request) {
         String message = "Database constraint violation: " + ex.getMostSpecificCause().getMessage();
-        return buildResponse(HttpStatus.CONFLICT, message, request, null);
+        return buildResponse(HttpStatus.CONFLICT, message, request, List.of(DataIntegrityViolationException.class.toString()));
     }
 
-    private ResponseEntity<ApiErrorResponse> buildResponse(HttpStatus status, String message, HttpServletRequest request, Map<String, String> errors) {
+    private ResponseEntity<ApiErrorResponse> buildResponse(HttpStatus status, String message, HttpServletRequest request, List<String> errors) {
         ApiErrorResponse response = new ApiErrorResponse(
                 Instant.now().toString(),
-                status.value(),
-                status.getReasonPhrase(),
                 message,
                 request.getRequestURI(),
                 errors
