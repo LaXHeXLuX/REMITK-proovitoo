@@ -16,8 +16,9 @@ public class Unit {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "car_id", nullable = false)
-    private Car car;
+    @JoinColumn(name = "vehicle_id", nullable = false)
+    @NotNull(message = "Unit must have a vehicle (key: vehicle)")
+    private Vehicle vehicle;
 
     @Column(nullable = false)
     private Boolean bookable = true;

@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS vehicle_booking;
 SET search_path TO vehicle_booking;
 
-CREATE TABLE cars (
+CREATE TABLE vehicles (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     company VARCHAR(255) NOT NULL,
@@ -13,11 +13,11 @@ CREATE TABLE cars (
 
 CREATE TABLE units (
     id BIGSERIAL PRIMARY KEY,
-    car_id BIGINT REFERENCES cars ON DELETE RESTRICT NOT NULL,
+    vehicle_id BIGINT REFERENCES vehicles ON DELETE RESTRICT NOT NULL,
     bookable BOOLEAN DEFAULT TRUE NOT NULL,
     licence_plate VARCHAR(20) UNIQUE,
     price_per_day NUMERIC(20, 2) CHECK (price_per_day >= 0),
-    CONSTRAINT bookable_car_has_price_and_plate CHECK (
+    CONSTRAINT bookable_unit_has_price_and_plate CHECK (
         (bookable IS FALSE) OR (licence_plate IS NOT NULL AND price_per_day IS NOT NULL)
     )
 );

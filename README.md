@@ -9,9 +9,9 @@
 ## API
 API access point: http://localhost:8080/api
 For a quick test, follow this checklist:
-- GET http://localhost:8080/api/cars - the response should be `[]` (200 OK)
-- POST http://localhost:8080/api/cars with the body `{}` - the response should list all errors in the body (400 Bad Request)
-- POST http://localhost:8080/api/cars with the body:
+- GET http://localhost:8080/api/vehicles - the response should be `[]` (200 OK)
+- POST http://localhost:8080/api/vehicles with the body `{}` - the response should list all errors in the body (400 Bad Request)
+- POST http://localhost:8080/api/vehicles with the body:
 ```
 {
     "company": "Ford",
@@ -23,6 +23,6 @@ For a quick test, follow this checklist:
 }
 ```
 the response should be the created object (201 Created)
-- GET http://localhost:8080/api/cars - the response should be a one-element list of the created object (200 OK)
-- DELETE http://localhost:8080/api/cars/1 - the response should be (204 No Content)
-- GET http://localhost:8080/api/cars - the response should be `[]` (200 OK)
+- GET http://localhost:8080/api/vehicles - the response should be a one-element list of the created object (200 OK)
+- DELETE http://localhost:8080/api/vehicles/1 - the response should be (204 No Content)
+- GET http://localhost:8080/api/vehicles - the response should be `[]` (200 OK)

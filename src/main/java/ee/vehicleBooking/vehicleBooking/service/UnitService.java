@@ -1,6 +1,6 @@
 package ee.vehicleBooking.vehicleBooking.service;
 
-import ee.vehicleBooking.vehicleBooking.model.Car;
+import ee.vehicleBooking.vehicleBooking.model.Vehicle;
 import ee.vehicleBooking.vehicleBooking.model.Unit;
 import ee.vehicleBooking.vehicleBooking.repository.UnitRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,11 +15,11 @@ import java.util.Map;
 @Transactional(readOnly = true)
 public class UnitService {
     private final UnitRepository unitRepository;
-    private final CarService carService;
+    private final VehicleService vehicleService;
 
-    public UnitService(UnitRepository unitRepository, CarService carService) {
+    public UnitService(UnitRepository unitRepository, VehicleService vehicleService) {
         this.unitRepository = unitRepository;
-        this.carService = carService;
+        this.vehicleService = vehicleService;
     }
 
     public List<Unit> getAll() {
@@ -51,10 +51,10 @@ public class UnitService {
 
         updates.forEach((key, value) -> {
             switch (key) {
-                case "carId" -> {
-                    Long carId = Long.valueOf((String) value);
-                    Car car = carService.getById(carId);
-                    unit.setCar(car);
+                case "vehicleId" -> {
+                    Long vehicleId = Long.valueOf((String) value);
+                    Vehicle vehicle = vehicleService.getById(vehicleId);
+                    unit.setVehicle(vehicle);
                 }
                 case "bookable" -> unit.setBookable((Boolean) value);
                 case "licencePlate" -> unit.setLicencePlate((String) value);
