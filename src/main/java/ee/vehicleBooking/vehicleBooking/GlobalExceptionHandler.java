@@ -63,7 +63,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiErrorResponse> handleDataIntegrity(DataIntegrityViolationException ex, HttpServletRequest request) {
-        String message = "Database constraint violation: " + ex.getMostSpecificCause().getMessage();
+        String message = "Data integrity violation: " + ex.getMostSpecificCause().getMessage();
         return buildResponse(HttpStatus.CONFLICT, message, request, errorList(ex));
     }
 
@@ -74,7 +74,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiErrorResponse> handleClassCast(IllegalArgumentException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiErrorResponse> handleIllegalArgument(IllegalArgumentException ex, HttpServletRequest request) {
         String message = "Illegal argument: " + ex.getMessage();
         return buildResponse(HttpStatus.BAD_REQUEST, message, request, errorList(ex));
     }
