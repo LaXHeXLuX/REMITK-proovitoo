@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tools.jackson.databind.exc.InvalidFormatException;
+import tools.jackson.databind.exc.UnrecognizedPropertyException;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -47,24 +48,50 @@ public class GlobalExceptionHandler {
                     cause.getValue(),
                     cause.getPath().getFirst().getPropertyName(),
                     cause.getTargetType());
+        } else if (ex.getCause() instanceof UnrecognizedPropertyException cause) {
+            message = String.format("Unrecognized property '%s'", cause.getPath().getFirst().getPropertyName());
         }
 
-        return buildResponse(HttpStatus.BAD_REQUEST, message, request, List.of(HttpMessageNotReadableException.class.toString()));
+        return buildResponse(HttpStatus.BAD_REQUEST, message, request, errorList(ex));
     }
 
     @ExceptionHandler(TransientPropertyValueException.class)
     public ResponseEntity<ApiErrorResponse> handleTransient(TransientPropertyValueException ex, HttpServletRequest request) {
         String message = String.format("Field '%s' requires a valid existing ID", ex.getPropertyName());
-        return buildResponse(HttpStatus.BAD_REQUEST, message, request, List.of(TransientPropertyValueException.class.toString()));
+        return buildResponse(HttpStatus.BAD_REQUEST, message, request, errorList(ex));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiErrorResponse> handleDataIntegrity(DataIntegrityViolationException ex, HttpServletRequest request) {
         String message = "Database constraint violation: " + ex.getMostSpecificCause().getMessage();
-        return buildResponse(HttpStatus.CONFLICT, message, request, List.of(DataIntegrityViolationException.class.toString()));
+        return buildResponse(HttpStatus.CONFLICT, message, request, errorList(ex));
     }
 
-    private ResponseEntity<ApiErrorResponse> buildResponse(HttpStatus status, String message, HttpServletRequest request, List<String> errors) {
+    @ExceptionHandler(ClassCastException.class)
+    public ResponseEntity<ApiErrorResponse> handleClassCast(ClassCastException ex, HttpServletRequest request) {
+        String message = "Class cast exception: " + ex.getMessage();
+        return buildResponse(HttpStatus.BAD_REQUEST, message, request, errorList(ex));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiErrorResponse> handleClassCast(IllegalArgumentException ex, HttpServletRequest request) {
+        String message = "Illegal argument: " + ex.getMessage();
+        return buildResponse(HttpStatus.BAD_REQUEST, message, request, errorList(ex));
+    }
+
+    private static List<String> errorList(Exception ex) {
+        List<String> errors = new ArrayList<>();
+        errors.add(ex.getClass().toString());
+        Throwable cause = ex.getCause();
+        while (cause != null) {
+            errors.add(cause.getClass().toString());
+            cause = cause.getCause();
+        }
+
+        return errors;
+    }
+
+    private static ResponseEntity<ApiErrorResponse> buildResponse(HttpStatus status, String message, HttpServletRequest request, List<String> errors) {
         ApiErrorResponse response = new ApiErrorResponse(
                 Instant.now().toString(),
                 message,
