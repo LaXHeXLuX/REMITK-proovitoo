@@ -51,6 +51,7 @@ public class VehicleService {
                 case "fuel" -> vehicle.setFuel(FuelType.valueOf((String) value));
                 case "transmission" -> vehicle.setTransmission(TransmissionType.valueOf((String) value));
                 case "year" -> vehicle.setYear((Integer) value);
+                default -> throw new IllegalArgumentException("Field '" + key + "' is not a valid updatable field.");
             }
         });
 

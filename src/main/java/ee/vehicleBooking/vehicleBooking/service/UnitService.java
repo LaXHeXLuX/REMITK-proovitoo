@@ -59,6 +59,7 @@ public class UnitService {
                 case "bookable" -> unit.setBookable((Boolean) value);
                 case "licencePlate" -> unit.setLicencePlate((String) value);
                 case "pricePerDay" -> unit.setPricePerDay((BigDecimal) value);
+                default -> throw new IllegalArgumentException("Field '" + key + "' is not a valid updatable field.");
             }
         });
 

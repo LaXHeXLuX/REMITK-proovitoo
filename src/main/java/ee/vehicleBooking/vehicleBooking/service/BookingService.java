@@ -59,6 +59,7 @@ public class BookingService {
                 case "bookingStart" -> booking.setBookingStart((LocalDateTime) value);
                 case "bookingEnd" -> booking.setBookingEnd((LocalDateTime) value);
                 case "paid" -> booking.setPaid((Boolean) value);
+                default -> throw new IllegalArgumentException("Field '" + key + "' is not a valid updatable field.");
             }
         });
 

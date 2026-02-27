@@ -46,6 +46,7 @@ public class ClientService {
             switch (key) {
                 case "name" -> client.setName((String) value);
                 case "birthDate" -> client.setBirthDate((LocalDate) value);
+                default -> throw new IllegalArgumentException("Field '" + key + "' is not a valid updatable field.");
             }
         });
 
