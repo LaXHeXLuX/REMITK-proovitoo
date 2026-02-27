@@ -1,17 +1,46 @@
 # VehicleBooking
+1. [Projekti kirjeldus](#projekti-kirjeldus)
+2. [Arhitektuur](#arhitektuur)
+3. [Käivitusjuhised](#käivitusjuhised)
+4. [Andmebaasi skeem](#andmebaasi-skeem)
+5. [Edasiarenduse võimalused](#edasiarenduse-võimalused)
 
-## How to run
-- Make sure your postgres server is running.
-- In [application.properties](src/main/resources/application.properties), change the `spring.datasource` variables if necessary.
-- Create a database called `vehicle_booking`.
-- Press "Run" while having selected the class [VehicleBookingApplication.java](src/main/java/ee/vehicleBooking/vehicleBooking/VehicleBookingApplication.java) in your favourite IDE.
+## Projekti kirjeldus
+Projekt *VehicleBooking* võimaldab hallata broneeritavaid sõidukeid. 
+Andmebaas: Postgres
+Back-end: Java Spring
+Front-end: Angular
 
-## API
+## Arhitektuur
+### Andmebaas
+Andmebaasiks on postgres. Andmebaasi skeem on flyway migratsiooni läbi versioonihalduses.  
+Andmebaas on disainitud võimalikult piiravalt - olemas on ainult need veerud, mida kohe vaja on. Kui mõistlik, on veergudel peal piirangud (*constraint*).
+
+### Back-end
+- *model* klass ühendab Java objekti andmebaasi tabeliga. Kasutusel on jakarta.persistence annotatsioonid. 
+- *repository* klass annab *service* klassile API andmebaasi päringute tegemiseks (kõik CRUD tüüpi päringud). 
+- *service* klass ühendab omavahel *controller* ja *repository* klassi ja sisaldab andmekäsitlusloogikat, kui seda vaja on. 
+- *controller* klass loob ühenduse REST API-ga.
+- *GlobalExceptionHandler* käsitleb vigu ning tagastab sobiva teatega HTTP staatuse.
+- *VehicleBookingApplication* paneb rakenduse käima.
+
+### Front-end
+Ei ole veel teinud. TODO!
+
+## Käivitusjuhised
+1. Veendu, et sinu Postgresi server töötab.
+2. Loo andmebaas nimega `vehicle_booking`: `CREATE DATABASE vehicle_booking;`.
+3. Muuda failis [application.properties](src/main/resources/application.properties) vajadusel `spring.datasource` muutujaid.
+4. Käivitamine:
+   - **IDE**: ava fail [VehicleBookingApplication.java](src/main/java/ee/vehicleBooking/vehicleBooking/VehicleBookingApplication.java) ja vajuta "Run".
+   - **Käsurida (CLI)**: `./mvnw spring-boot:run`
+
+### API testimine
 API access point: http://localhost:8080/api
-For a quick test, follow this checklist:
-- GET http://localhost:8080/api/vehicles - the response should be `[]` (200 OK)
-- POST http://localhost:8080/api/vehicles with the body `{}` - the response should list all errors in the body (400 Bad Request)
-- POST http://localhost:8080/api/vehicles with the body:
+Alguses API testimiseks järgi seda nimekirja:
+- GET http://localhost:8080/api/vehicles - vastus peaks olema `[]` (200 OK)
+- POST http://localhost:8080/api/vehicles, body `{}` - vastuses peaks olema nimekiri kõikidest erroritest kehas (400 Bad Request)
+- POST http://localhost:8080/api/vehicles, body:
 ```
 {
     "company": "Ford",
@@ -22,7 +51,15 @@ For a quick test, follow this checklist:
     "year": 1990
 }
 ```
-the response should be the created object (201 Created)
-- GET http://localhost:8080/api/vehicles - the response should be a one-element list of the created object (200 OK)
-- DELETE http://localhost:8080/api/vehicles/1 - the response should be (204 No Content)
-- GET http://localhost:8080/api/vehicles - the response should be `[]` (200 OK)
+vastuseks peaks olema loodud objekt (201 Created)
+- GET http://localhost:8080/api/vehicles - vastus peaks olema list ühe elemendiga - äsja loodud objektiga (200 OK)
+- DELETE http://localhost:8080/api/vehicles/1 - vastus peaks olema (204 No Content)
+- GET http://localhost:8080/api/vehicles - vastus peaks olema `[]` (200 OK)
+
+## Andmebaasi skeem
+![ERD skeem](docs/ERD.png)
+
+## Edasiarenduse võimalused
+- Suurem testide katvus
+- Autentimine
+- Põhjalikum logimine 
