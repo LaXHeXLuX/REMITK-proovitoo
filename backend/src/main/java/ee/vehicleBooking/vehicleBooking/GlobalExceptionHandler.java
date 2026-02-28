@@ -1,7 +1,10 @@
 package ee.vehicleBooking.vehicleBooking;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.hibernate.TransientPropertyValueException;
+import org.postgresql.util.PSQLException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +17,7 @@ import tools.jackson.databind.exc.InvalidFormatException;
 import tools.jackson.databind.exc.UnrecognizedPropertyException;
 
 import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,8 +66,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ApiErrorResponse> handleDataIntegrity(DataIntegrityViolationException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex, HttpServletRequest request) {
         String message = "Data integrity violation: " + ex.getMostSpecificCause().getMessage();
+        return buildResponse(HttpStatus.CONFLICT, message, request, errorList(ex));
+    }
+
+    @ExceptionHandler(PSQLException.class)
+    public ResponseEntity<ApiErrorResponse> handlePSQLException(PSQLException ex, HttpServletRequest request) {
+        String message = "PSQL exception: " + ex.getMessage();
         return buildResponse(HttpStatus.CONFLICT, message, request, errorList(ex));
     }
 
@@ -73,9 +83,25 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_REQUEST, message, request, errorList(ex));
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiErrorResponse> handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest request) {
+        List<String> violations = new ArrayList<>();
+        for (ConstraintViolation<?> constraintViolation : ex.getConstraintViolations()) {
+            violations.add(constraintViolation.getMessage());
+        }
+        String message = "Constraint violations: " + violations;
+        return buildResponse(HttpStatus.CONFLICT, message, request, errorList(ex));
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiErrorResponse> handleIllegalArgument(IllegalArgumentException ex, HttpServletRequest request) {
         String message = "Illegal argument: " + ex.getMessage();
+        return buildResponse(HttpStatus.BAD_REQUEST, message, request, errorList(ex));
+    }
+
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<ApiErrorResponse> handleDateTimeParse(DateTimeParseException ex, HttpServletRequest request) {
+        String message = "Date time parse exception: " + ex.getMessage();
         return buildResponse(HttpStatus.BAD_REQUEST, message, request, errorList(ex));
     }
 
