@@ -1,6 +1,5 @@
 package ee.vehicleBooking.vehicleBooking;
 
-import ee.vehicleBooking.vehicleBooking.model.*;
 import ee.vehicleBooking.vehicleBooking.repository.UnitRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
