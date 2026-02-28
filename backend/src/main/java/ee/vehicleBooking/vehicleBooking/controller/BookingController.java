@@ -24,11 +24,6 @@ public class BookingController {
         return bookingService.getAll();
     }
 
-    @GetMapping("/client/{clientId}")
-    public List<Booking> getClientBookings(@PathVariable Long clientId) {
-        return bookingService.getClientBookings(clientId);
-    }
-
     @PostMapping
     public ResponseEntity<Booking> create(@Valid @RequestBody Booking booking) {
         return ResponseEntity.status(HttpStatus.CREATED).body(bookingService.save(booking));

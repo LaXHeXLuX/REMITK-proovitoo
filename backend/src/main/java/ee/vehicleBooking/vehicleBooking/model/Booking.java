@@ -16,10 +16,8 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", nullable = false)
-    @NotNull(message = "Booking must have a client (key: client)")
-    private Client client;
+    @NotNull(message = "Booking must have a client name (key: clientName)")
+    private String clientName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_id", nullable = false)
@@ -33,8 +31,4 @@ public class Booking {
     @Column(name = "booking_end", nullable = false)
     @NotNull(message = "Booking must have an end time (key: bookingEnd)")
     private LocalDateTime bookingEnd;
-
-    @Column(nullable = false)
-    @NotNull(message = "Booking must have \"paid\" flag (key: paid)")
-    private Boolean paid = false;
 }

@@ -22,17 +22,11 @@ CREATE TABLE units (
     )
 );
 
-CREATE TABLE clients (
-    id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255),
-    birth_date DATE
-);
-
 CREATE EXTENSION IF NOT EXISTS btree_gist;
 
 CREATE TABLE bookings (
     id BIGSERIAL PRIMARY KEY,
-    client_id BIGINT REFERENCES clients ON DELETE RESTRICT NOT NULL,
+    client_name VARCHAR(100) NOT NULL,
     unit_id BIGINT REFERENCES units ON DELETE RESTRICT NOT NULL,
     booking_start TIMESTAMP NOT NULL,
     booking_end TIMESTAMP NOT NULL,
@@ -41,6 +35,19 @@ CREATE TABLE bookings (
     CONSTRAINT no_overlapping_bookings EXCLUDE USING gist (
        unit_id WITH =,
        tsrange(booking_start, booking_end) WITH &&
-    ),
-    paid BOOLEAN DEFAULT FALSE NOT NULL
+    )
 );
+
+CREATE OR REPLACE FUNCTION check_unit_is_bookable()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (SELECT bookable FROM vehicle_booking.units WHERE id = NEW.unit_id) != TRUE
+    THEN RAISE EXCEPTION 'Unit % is not bookable', NEW.unit_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER validate_unit_bookable
+BEFORE INSERT OR UPDATE ON bookings
+FOR EACH ROW EXECUTE FUNCTION check_unit_is_bookable();

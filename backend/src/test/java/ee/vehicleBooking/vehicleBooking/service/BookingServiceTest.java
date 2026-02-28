@@ -40,15 +40,6 @@ class BookingServiceTest {
     }
 
     @Test
-    void getClientBookings() {
-        List<Booking> mockList = List.of(utils.booking1);
-        Mockito.when(bookingRepository.findByClientId(1L)).thenReturn(mockList);
-        Mockito.when(bookingRepository.findByClientId(2L)).thenReturn(List.of());
-        assertEquals(mockList, bookingService.getClientBookings(1L));
-        assertEquals(List.of(), bookingService.getClientBookings(2L));
-    }
-
-    @Test
     void save() {
         Mockito.when(bookingRepository.save(utils.booking1)).thenReturn(utils.booking1);
         assertEquals(utils.booking1, bookingService.save(utils.booking1));

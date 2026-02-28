@@ -30,10 +30,6 @@ public class BookingService {
         return bookingRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Booking not found"));
     }
 
-    public List<Booking> getClientBookings(Long clientId) {
-        return bookingRepository.findByClientId(clientId);
-    }
-
     @Transactional
     public Booking save(Booking booking) {
         return bookingRepository.save(booking);
@@ -47,18 +43,21 @@ public class BookingService {
     @Transactional
     public Booking patch(Long id, Map<String, Object> updates) {
         Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Client not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Booking not found"));
 
         updates.forEach((key, value) -> {
             switch (key) {
+                case "clientName" -> booking.setClientName((String) value);
                 case "unitId" -> {
-                    Long unitId = Long.valueOf((String) value);
-                    Unit unit = unitService.getById(unitId);
+                    Unit unit = null;
+                    if (value != null) {
+                        Long unitId = Long.valueOf((String) value);
+                        unit = unitService.getById(unitId);
+                    }
                     booking.setUnit(unit);
                 }
-                case "bookingStart" -> booking.setBookingStart((LocalDateTime) value);
-                case "bookingEnd" -> booking.setBookingEnd((LocalDateTime) value);
-                case "paid" -> booking.setPaid((Boolean) value);
+                case "bookingStart" -> booking.setBookingStart(LocalDateTime.parse((String) value));
+                case "bookingEnd" -> booking.setBookingEnd(LocalDateTime.parse((String) value));
                 default -> throw new IllegalArgumentException("Field '" + key + "' is not a valid updatable field.");
             }
         });
