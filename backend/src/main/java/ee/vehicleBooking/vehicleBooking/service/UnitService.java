@@ -47,18 +47,24 @@ public class UnitService {
     @Transactional
     public Unit patch(Long id, Map<String, Object> updates) {
         Unit unit = unitRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Client not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Unit not found"));
 
         updates.forEach((key, value) -> {
             switch (key) {
                 case "vehicleId" -> {
-                    Long vehicleId = Long.valueOf((String) value);
-                    Vehicle vehicle = vehicleService.getById(vehicleId);
+                    Vehicle vehicle = null;
+                    if (value != null) {
+                        Long vehicleId = Long.valueOf((String) value);
+                        vehicle = vehicleService.getById(vehicleId);
+                    }
                     unit.setVehicle(vehicle);
                 }
                 case "bookable" -> unit.setBookable((Boolean) value);
                 case "licencePlate" -> unit.setLicencePlate((String) value);
-                case "pricePerDay" -> unit.setPricePerDay((BigDecimal) value);
+                case "pricePerDay" -> {
+                    if (value != null) unit.setPricePerDay(new BigDecimal(value.toString()));
+                    else unit.setPricePerDay(null);
+                }
                 default -> throw new IllegalArgumentException("Field '" + key + "' is not a valid updatable field.");
             }
         });
