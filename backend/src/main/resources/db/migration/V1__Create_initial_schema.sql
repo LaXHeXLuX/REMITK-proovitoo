@@ -3,8 +3,8 @@ SET search_path TO vehicle_booking;
 
 CREATE TABLE vehicles (
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    company VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL CHECK (length(trim(name)) > 0),
+    company VARCHAR(255) NOT NULL CHECK (length(trim(company)) > 0),
     number_of_seats INTEGER NOT NULL CHECK (number_of_seats > 0),
     fuel VARCHAR(20) NOT NULL,
     transmission VARCHAR(20) NOT NULL,
@@ -14,8 +14,9 @@ CREATE TABLE vehicles (
 CREATE TABLE units (
     id BIGSERIAL PRIMARY KEY,
     vehicle_id BIGINT REFERENCES vehicles ON DELETE RESTRICT NOT NULL,
+    vin VARCHAR(17) UNIQUE CHECK (length(vin) = 17),
     bookable BOOLEAN DEFAULT TRUE NOT NULL,
-    licence_plate VARCHAR(20) UNIQUE,
+    licence_plate VARCHAR(20) UNIQUE CHECK (length(trim(licence_plate)) > 0),
     price_per_day NUMERIC(20, 2) CHECK (price_per_day >= 0),
     CONSTRAINT bookable_unit_has_price_and_plate CHECK (
         (bookable IS FALSE) OR (licence_plate IS NOT NULL AND price_per_day IS NOT NULL)
@@ -26,7 +27,7 @@ CREATE EXTENSION IF NOT EXISTS btree_gist;
 
 CREATE TABLE bookings (
     id BIGSERIAL PRIMARY KEY,
-    client_name VARCHAR(100) NOT NULL,
+    client_name VARCHAR(100) NOT NULL CHECK (length(trim(client_name)) > 0),
     unit_id BIGINT REFERENCES units ON DELETE RESTRICT NOT NULL,
     booking_start TIMESTAMP NOT NULL,
     booking_end TIMESTAMP NOT NULL,

@@ -21,6 +21,10 @@ public class Unit {
     @NotNull(message = "Unit must have a vehicle (key: vehicle)")
     private Vehicle vehicle;
 
+    @Column(nullable = false, length = 17)
+    @NotNull(message = "Unit must have \"bookable\" flag (key: bookable)")
+    private String vin;
+
     @Column(nullable = false)
     @NotNull(message = "Unit must have \"bookable\" flag (key: bookable)")
     private Boolean bookable = true;
