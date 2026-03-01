@@ -1,27 +1,41 @@
 <div class="vehicle-list">
 	<div class="toolbar">
-		<input (input)="searchTerm = $any($event.target).value" placeholder="Search by name, company or year" />
-	</div>
+    <label>
+      <input (input)="searchTerm = $any($event.target).value" placeholder="Search by name, company or year" />
+    </label>
+  </div>
 
 	<div class="form">
 		<h3>{{ editing ? 'Edit Vehicle' : 'Add Vehicle' }}</h3>
     <div *ngIf="formError" style="color:#b91c1c; margin-bottom:8px">{{ formError }}</div>
-		<div class="row"><input placeholder="Name" [value]="formName" (input)="formName = $any($event.target).value" /></div>
-		<div class="row"><input placeholder="Company" [value]="formCompany" (input)="formCompany = $any($event.target).value" /></div>
-		<div class="row"><input type="number" placeholder="Seats" [value]="formSeats" (input)="formSeats = $any($event.target).value ? +$any($event.target).value : null" /></div>
+		<div class="row"><label>
+      <input placeholder="Name" [value]="formName" (input)="formName = $any($event.target).value" />
+    </label></div>
+		<div class="row"><label>
+      <input placeholder="Company" [value]="formCompany" (input)="formCompany = $any($event.target).value" />
+    </label></div>
+		<div class="row"><label>
+      <input type="number" placeholder="Seats" [value]="formSeats" (input)="formSeats = $any($event.target).value ? +$any($event.target).value : null" />
+    </label></div>
 		<div class="row">
-			<select [value]="formFuel" (change)="formFuel = $any($event.target).value">
-				<option value="diesel">diesel</option>
-				<option value="gasoline">gasoline</option>
-				<option value="electric">electric</option>
-				<option value="LPG">LPG</option>
-			</select>
-			<select [value]="formTransmission" (change)="formTransmission = $any($event.target).value">
-				<option value="manual">manual</option>
-				<option value="automatic">automatic</option>
-			</select>
-			<input type="number" placeholder="Year" [value]="formYear" (input)="formYear = $any($event.target).value ? +$any($event.target).value : null" />
-		</div>
+      <label>
+        <select [value]="formFuel" (change)="formFuel = $any($event.target).value">
+          <option value="diesel">diesel</option>
+          <option value="gasoline">gasoline</option>
+          <option value="electric">electric</option>
+          <option value="LPG">LPG</option>
+        </select>
+      </label>
+      <label>
+        <select [value]="formTransmission" (change)="formTransmission = $any($event.target).value">
+          <option value="manual">manual</option>
+          <option value="automatic">automatic</option>
+        </select>
+      </label>
+      <label>
+        <input type="number" placeholder="Year" [value]="formYear" (input)="formYear = $any($event.target).value ? +$any($event.target).value : null" />
+      </label>
+    </div>
 		<div class="actions">
 			<button (click)="saveVehicle()">{{ editing ? 'Save' : 'Create' }}</button>
 			<button *ngIf="editing" (click)="cancelEdit()">Cancel</button>

@@ -2,21 +2,31 @@
   <h2>Available Units</h2>
 
   <div class="filters">
-    <input type="number" placeholder="Max price" [(ngModel)]="maxPrice" />
-    <input type="number" placeholder="Min vehicle year" [(ngModel)]="minYear" />
-    <select [(ngModel)]="transmission">
-      <option value="">Any transmission</option>
-      <option value="manual">manual</option>
-      <option value="automatic">automatic</option>
-    </select>
-    <select [(ngModel)]="fuel">
-      <option value="">Any fuel</option>
-      <option value="diesel">diesel</option>
-      <option value="gasoline">gasoline</option>
-      <option value="electric">electric</option>
-      <option value="LPG">LPG</option>
-    </select>
-    <input type="number" placeholder="Min seats" [(ngModel)]="minSeats" />
+    <label>
+      <input type="number" placeholder="Max price" [(ngModel)]="maxPrice" />
+    </label>
+    <label>
+      <input type="number" placeholder="Min vehicle year" [(ngModel)]="minYear" />
+    </label>
+    <label>
+      <select [(ngModel)]="transmission">
+        <option value="">Any transmission</option>
+        <option value="manual">manual</option>
+        <option value="automatic">automatic</option>
+      </select>
+    </label>
+    <label>
+      <select [(ngModel)]="fuel">
+        <option value="">Any fuel</option>
+        <option value="diesel">diesel</option>
+        <option value="gasoline">gasoline</option>
+        <option value="electric">electric</option>
+        <option value="LPG">LPG</option>
+      </select>
+    </label>
+    <label>
+      <input type="number" placeholder="Min seats" [(ngModel)]="minSeats" />
+    </label>
   </div>
 
   <table>
