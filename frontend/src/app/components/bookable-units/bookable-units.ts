@@ -25,6 +25,9 @@ export class BookableUnits implements OnInit {
   desiredTimeStart: string = '';
   desiredDateEnd: string = '';
   desiredTimeEnd: string = '';
+  // configurable business hours (easy to change)
+  dayStartHour: number = 8;
+  dayEndHour: number = 20;
   timeOptions: string[] = [];
 
   // filters
@@ -108,8 +111,10 @@ export class BookableUnits implements OnInit {
 
   private generateTimeOptions(): string[] {
     const opts: string[] = [];
-    for (let h = 0; h < 24; h++) {
+    for (let h = this.dayStartHour; h <= this.dayEndHour; h++) {
       for (let m = 0; m < 60; m += 15) {
+        // if we've reached the end hour, only include :00
+        if (h === this.dayEndHour && m > 0) continue;
         const hh = String(h).padStart(2, '0');
         const mm = String(m).padStart(2, '0');
         opts.push(`${hh}:${mm}`);
