@@ -19,6 +19,11 @@ export class UnitService {
     return this.http.get<Unit[]>(`${this.apiUrl}/bookable`);
   }
 
+  getAvailable(start: string, end: string): Observable<Unit[]> {
+    const params = `?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
+    return this.http.get<Unit[]>(`${this.apiUrl}/available${params}`);
+  }
+
   createUnit(unit: Unit): Observable<Unit> {
     return this.http.post<Unit>(this.apiUrl, unit);
   }

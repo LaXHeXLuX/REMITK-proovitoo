@@ -2,34 +2,45 @@
   <h2>Available Units</h2>
 
   <div class="filters">
-    <label>
-      <input type="number" placeholder="Max price" [(ngModel)]="maxPrice" />
-    </label>
-    <label>
-      <input type="number" placeholder="Min vehicle year" [(ngModel)]="minYear" />
-    </label>
-    <label>
-      <select [(ngModel)]="transmission">
-        <option value="">Any transmission</option>
-        <option value="manual">manual</option>
-        <option value="automatic">automatic</option>
+    <label>Start:
+      <input type="date" [(ngModel)]="desiredDateStart" (input)="onDesiredChange()" [min]="todayString()" />
+      <select [(ngModel)]="desiredTimeStart" (change)="onDesiredChange()">
+        <option value="">--</option>
+        <option *ngFor="let t of timeOptions" [value]="t" [disabled]="isDesiredStartTimeDisabled(t)">{{ t }}</option>
       </select>
     </label>
-    <label>
-      <select [(ngModel)]="fuel">
-        <option value="">Any fuel</option>
-        <option value="diesel">diesel</option>
-        <option value="gasoline">gasoline</option>
-        <option value="electric">electric</option>
-        <option value="LPG">LPG</option>
+    <label>End:
+      <input type="date" [(ngModel)]="desiredDateEnd" (input)="onDesiredChange()" [min]="desiredDateStart || todayString()" />
+      <select [(ngModel)]="desiredTimeEnd" (change)="onDesiredChange()">
+        <option value="">--</option>
+        <option *ngFor="let t of timeOptions" [value]="t" [disabled]="isDesiredEndTimeDisabled(t)">{{ t }}</option>
       </select>
     </label>
-    <label>
-      <input type="number" placeholder="Min seats" [(ngModel)]="minSeats" />
-    </label>
+    <button (click)="fetchAvailable()">Find Available</button>
+
+    <div class="advanced-filters" *ngIf="searched">
+      <label>Price from: <input type="number" [(ngModel)]="priceFrom" /></label>
+      <label>to: <input type="number" [(ngModel)]="priceTo" /></label>
+      <label>Min year: <input type="number" [(ngModel)]="minYear" /></label>
+      <label>Min seats: <input type="number" [(ngModel)]="minSeats" /></label>
+
+      <div class="checkbox-group">
+        <div>Transmission:</div>
+        <label><input type="checkbox" [(ngModel)]="transmissionFilters['manual']" /> manual</label>
+        <label><input type="checkbox" [(ngModel)]="transmissionFilters['automatic']" /> automatic</label>
+      </div>
+
+      <div class="checkbox-group">
+        <div>Fuel:</div>
+        <label><input type="checkbox" [(ngModel)]="fuelFilters['diesel']" /> diesel</label>
+        <label><input type="checkbox" [(ngModel)]="fuelFilters['gasoline']" /> gasoline</label>
+        <label><input type="checkbox" [(ngModel)]="fuelFilters['electric']" /> electric</label>
+        <label><input type="checkbox" [(ngModel)]="fuelFilters['LPG']" /> LPG</label>
+      </div>
+    </div>
   </div>
 
-  <table>
+  <table *ngIf="searched">
     <thead><tr><th>Vehicle</th><th>Licence</th><th>Price</th><th>Year</th><th>Seats</th><th></th></tr></thead>
     <tbody>
       <tr *ngFor="let u of filtered">
@@ -43,10 +54,22 @@
     </tbody>
   </table>
 
-  <div class="booking-form" *ngIf="selectedUnit">
+  <div class="booking-form" *ngIf="selectedUnit && searched">
     <h3>Book unit: {{ selectedUnit.licencePlate }} ({{ selectedUnit.vehicle.name }})</h3>
-    <label>Start: <input type="datetime-local" [(ngModel)]="bookingStart" /></label>
-    <label>End: <input type="datetime-local" [(ngModel)]="bookingEnd" /></label>
+    <label>Start:
+      <input type="date" [(ngModel)]="bookingDateStart" [min]="todayString()" (input)="onBookingChange()" />
+      <select [(ngModel)]="bookingTimeStart" (change)="onBookingChange()">
+        <option value="">--</option>
+        <option *ngFor="let t of timeOptions" [value]="t" [disabled]="isBookingStartTimeDisabled(t)">{{ t }}</option>
+      </select>
+    </label>
+    <label>End:
+      <input type="date" [(ngModel)]="bookingDateEnd" [min]="bookingDateStart || todayString()" (input)="onBookingChange()" />
+      <select [(ngModel)]="bookingTimeEnd" (change)="onBookingChange()">
+        <option value="">--</option>
+        <option *ngFor="let t of timeOptions" [value]="t" [disabled]="isBookingEndTimeDisabled(t)">{{ t }}</option>
+      </select>
+    </label>
     <div><button (click)="createBooking()">Create Booking</button> <button (click)="selectedUnit = undefined">Cancel</button></div>
   </div>
 </div>

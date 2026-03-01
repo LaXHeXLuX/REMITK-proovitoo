@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { UnitService } from '../../services/unit';
 import { BookingService } from '../../services/booking';
 import { Unit } from '../../models/unit';
+import { standardSchemaError } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-bookable-units',
@@ -14,49 +15,229 @@ import { Unit } from '../../models/unit';
 })
 export class BookableUnits implements OnInit {
   units: Unit[] = [];
+  // date range
+  desiredStart: string = '';
+  desiredEnd: string = '';
+  // whether a search has been performed
+  searched: boolean = false;
+  // separate date/time inputs for cleaner 15-min selection
+  desiredDateStart: string = '';
+  desiredTimeStart: string = '';
+  desiredDateEnd: string = '';
+  desiredTimeEnd: string = '';
+  timeOptions: string[] = [];
+
   // filters
-  maxPrice?: number | null = null;
+  priceFrom?: number | null = null;
+  priceTo?: number | null = null;
   minYear?: number | null = null;
-  transmission: string = '';
-  fuel: string = '';
   minSeats?: number | null = null;
+  // transmission/fuel checkbox maps
+  transmissionFilters: Record<string, boolean> = { manual: false, automatic: false };
+  fuelFilters: Record<string, boolean> = { diesel: false, gasoline: false, electric: false, LPG: false };
 
   // booking form
   selectedUnit?: Unit;
   bookingStart: string = '';
   bookingEnd: string = '';
+  bookingDateStart: string = '';
+  bookingTimeStart: string = '';
+  bookingDateEnd: string = '';
+  bookingTimeEnd: string = '';
 
-  constructor(private unitService: UnitService, private bookingService: BookingService, private cdr: ChangeDetectorRef) {}
-
-  ngOnInit(): void {
-    this.loadBookable();
+  constructor(private unitService: UnitService, private bookingService: BookingService, private cdr: ChangeDetectorRef) {
+    this.timeOptions = this.generateTimeOptions();
   }
 
-  loadBookable(): void {
-    this.unitService.getBookableUnits().subscribe({
-      next: (data) => {
-        this.units = data;
-        this.cdr.detectChanges();
-      },
-      error: (err) => console.error('Error loading bookable units', err),
+  ngOnInit(): void {}
+
+  fetchAvailable(): void {
+    // require date+time parts (clean UI)
+    if (!this.desiredDateStart || !this.desiredTimeStart || !this.desiredDateEnd || !this.desiredTimeEnd) return alert('Provide start and end date/time');
+    this.desiredStart = `${this.desiredDateStart}T${this.desiredTimeStart}`;
+    this.desiredEnd = `${this.desiredDateEnd}T${this.desiredTimeEnd}`;
+    this.unitService.getAvailable(this.desiredStart, this.desiredEnd).subscribe({
+      next: (data) => { this.units = data; this.searched = true; this.cdr.detectChanges(); },
+      error: (err) => { console.error('Error loading available units', err); alert('Error loading available units'); }
     });
+  }
+
+  onDesiredChange(): void {
+    // any change to desired date/time clears previous search until user clicks Find
+    this.searched = false;
+    this.units = [];
+    this.desiredStart = '';
+    this.desiredEnd = '';
+    this.validateDesiredRange();
+  }
+
+  private combineDateTime(date: string | undefined, time: string | undefined): Date | null {
+    if (!date || !time) return null;
+    const d = new Date(`${date}T${time}`);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  private validateDesiredRange(): void {
+    // clear invalid desired start/time if it becomes earlier than now
+    const now = new Date();
+    const start = this.combineDateTime(this.desiredDateStart, this.desiredTimeStart);
+    if (start && start.getTime() < now.getTime()) {
+      this.desiredTimeStart = '';
+    }
+
+    // clear invalid desired end/time if it's <= start or before now
+    const end = this.combineDateTime(this.desiredDateEnd, this.desiredTimeEnd);
+
+    if (end) {
+      const checks = [now, start]
+      checks.forEach(check => {
+        if (check === null) return;
+        if (end.getTime() < check.getTime()) {
+          this.desiredTimeEnd = '';
+          if (end.getDate() < check.getDate()) {
+            this.desiredDateEnd = '';
+          }
+        }
+      });
+    }
+
+    // also ensure time selections which are currently disabled get cleared
+    if (this.desiredTimeStart && this.isDesiredStartTimeDisabled(this.desiredTimeStart)) this.desiredTimeStart = '';
+    if (this.desiredTimeEnd && this.isDesiredEndTimeDisabled(this.desiredTimeEnd)) this.desiredTimeEnd = '';
+  }
+
+  private generateTimeOptions(): string[] {
+    const opts: string[] = [];
+    for (let h = 0; h < 24; h++) {
+      for (let m = 0; m < 60; m += 15) {
+        const hh = String(h).padStart(2, '0');
+        const mm = String(m).padStart(2, '0');
+        opts.push(`${hh}:${mm}`);
+      }
+    }
+    return opts;
+  }
+
+  todayString(): string {
+    const d = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  }
+
+  private timeToMinutes(t: string): number {
+    if (!t) return -Infinity;
+    const [hh, mm] = t.split(':').map(s => parseInt(s, 10));
+    return hh * 60 + mm;
+  }
+
+  private nowMinutes(): number {
+    const d = new Date();
+    return d.getHours() * 60 + d.getMinutes();
+  }
+
+  isDesiredStartTimeDisabled(opt: string): boolean {
+    if (!this.desiredDateStart) return false;
+    if (this.desiredDateStart !== this.todayString()) return false;
+    return this.timeToMinutes(opt) < this.nowMinutes();
+  }
+
+  isDesiredEndTimeDisabled(opt: string): boolean {
+    if (!this.desiredDateEnd) return false;
+    if (this.desiredDateStart && this.desiredDateEnd === this.desiredDateStart && this.desiredTimeStart) {
+      return this.timeToMinutes(opt) <= this.timeToMinutes(this.desiredTimeStart);
+    }
+    // if end is today, cannot pick before now
+    if (this.desiredDateEnd === this.todayString()) return this.timeToMinutes(opt) < this.nowMinutes();
+    return false;
+  }
+
+  isBookingStartTimeDisabled(opt: string): boolean {
+    if (!this.bookingDateStart) return false;
+    if (this.bookingDateStart !== this.todayString()) return false;
+    return this.timeToMinutes(opt) < this.nowMinutes();
+  }
+
+  isBookingEndTimeDisabled(opt: string): boolean {
+    if (!this.bookingDateEnd) return false;
+    if (this.bookingDateStart && this.bookingDateEnd === this.bookingDateStart && this.bookingTimeStart) {
+      return this.timeToMinutes(opt) <= this.timeToMinutes(this.bookingTimeStart);
+    }
+    if (this.bookingDateEnd === this.todayString()) return this.timeToMinutes(opt) < this.nowMinutes();
+    return false;
   }
 
   get filtered(): Unit[] {
     return this.units.filter(u => {
-      if (this.maxPrice != null && u.pricePerDay != null && +u.pricePerDay > +this.maxPrice) return false;
-      if (this.minYear != null && u.vehicle && u.vehicle.year && +u.vehicle.year < +this.minYear) return false;
-      if (this.transmission && u.vehicle && u.vehicle.transmission !== this.transmission) return false;
-      if (this.fuel && u.vehicle && u.vehicle.fuel !== this.fuel) return false;
+      // price range
+      const price = u.pricePerDay ?? 0;
+      if (this.priceFrom != null && price < +this.priceFrom) return false;
+      if (this.priceTo != null && price > +this.priceTo) return false;
+      // year
+      if (this.minYear != null && u.vehicle && u.vehicle.year < +this.minYear) return false;
+      // seats
       if (this.minSeats != null && u.vehicle && u.vehicle.numberOfSeats < +this.minSeats) return false;
+      // transmission filters: if any selected, vehicle.transmission must be one of them
+      const transSelected = Object.keys(this.transmissionFilters).filter(k => this.transmissionFilters[k]);
+      if (transSelected.length > 0 && u.vehicle && !transSelected.includes(u.vehicle.transmission)) return false;
+      // fuel filters
+      const fuelSelected = Object.keys(this.fuelFilters).filter(k => this.fuelFilters[k]);
+      if (fuelSelected.length > 0 && u.vehicle && !fuelSelected.includes(u.vehicle.fuel)) return false;
       return true;
     });
   }
 
-  selectUnit(u: Unit) { this.selectedUnit = u; }
+  selectUnit(u: Unit) {
+    this.selectedUnit = u;
+    // prefill booking parts from the desired search range if available
+    if (this.desiredDateStart && this.desiredTimeStart) {
+      this.bookingDateStart = this.desiredDateStart;
+      this.bookingTimeStart = this.desiredTimeStart;
+    } else if (this.desiredStart) {
+      const [d, t] = this.desiredStart.split('T'); this.bookingDateStart = d; this.bookingTimeStart = t;
+    }
+    if (this.desiredDateEnd && this.desiredTimeEnd) {
+      this.bookingDateEnd = this.desiredDateEnd;
+      this.bookingTimeEnd = this.desiredTimeEnd;
+    } else if (this.desiredEnd) {
+      const [d, t] = this.desiredEnd.split('T'); this.bookingDateEnd = d; this.bookingTimeEnd = t;
+    }
+    this.bookingStart = this.bookingDateStart && this.bookingTimeStart ? `${this.bookingDateStart}T${this.bookingTimeStart}` : '';
+    this.bookingEnd = this.bookingDateEnd && this.bookingTimeEnd ? `${this.bookingDateEnd}T${this.bookingTimeEnd}` : '';
+  }
+
+  onBookingChange(): void {
+    // validate booking parts two-way
+    this.validateBookingRange();
+    // keep assembled strings in sync when possible
+    this.bookingStart = this.bookingDateStart && this.bookingTimeStart ? `${this.bookingDateStart}T${this.bookingTimeStart}` : '';
+    this.bookingEnd = this.bookingDateEnd && this.bookingTimeEnd ? `${this.bookingDateEnd}T${this.bookingTimeEnd}` : '';
+  }
+
+  private validateBookingRange(): void {
+    const now = new Date();
+    const start = this.combineDateTime(this.bookingDateStart, this.bookingTimeStart);
+    if (start && start.getTime() < now.getTime()) {
+      this.bookingTimeStart = '';
+    }
+    const end = this.combineDateTime(this.bookingDateEnd, this.bookingTimeEnd);
+    if (end) {
+      if (start && end.getTime() <= start.getTime()) {
+        this.bookingTimeEnd = '';
+      } else if (end.getTime() < now.getTime()) {
+        this.bookingTimeEnd = '';
+      }
+    }
+    if (this.bookingTimeStart && this.isBookingStartTimeDisabled(this.bookingTimeStart)) this.bookingTimeStart = '';
+    if (this.bookingTimeEnd && this.isBookingEndTimeDisabled(this.bookingTimeEnd)) this.bookingTimeEnd = '';
+  }
 
   createBooking(): void {
     if (!this.selectedUnit) return alert('Select a unit first');
+    // assemble bookingStart/End from parts when available
+    if (this.bookingDateStart && this.bookingTimeStart && this.bookingDateEnd && this.bookingTimeEnd) {
+      this.bookingStart = `${this.bookingDateStart}T${this.bookingTimeStart}`;
+      this.bookingEnd = `${this.bookingDateEnd}T${this.bookingTimeEnd}`;
+    }
     if (!this.bookingStart || !this.bookingEnd) return alert('Specify start and end');
     const payload = {
       clientName: 'Anonymous',
@@ -65,7 +246,7 @@ export class BookableUnits implements OnInit {
       bookingEnd: this.bookingEnd,
     };
     this.bookingService.createBooking(payload as any).subscribe({
-      next: () => { alert('Booking created'); this.selectedUnit = undefined; this.bookingStart = ''; this.bookingEnd = ''; this.loadBookable(); },
+      next: () => { alert('Booking created'); this.selectedUnit = undefined; this.bookingStart = ''; this.bookingEnd = ''; if (this.desiredStart && this.desiredEnd) this.fetchAvailable(); },
       error: (err) => { console.error('Error creating booking', err); alert('Error creating booking'); }
     });
   }
