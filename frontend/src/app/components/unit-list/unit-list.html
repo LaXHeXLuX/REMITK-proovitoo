@@ -1,0 +1,26 @@
+<div class="unit-list">
+  <div class="toolbar">
+    <label><input type="checkbox" (change)="showOnlyBookable = $any($event.target).checked" /> Show only bookable</label>
+  </div>
+
+  <table class="units">
+    <thead>
+      <tr>
+        <th>Vehicle</th>
+        <th>Licence</th>
+        <th>Price / day</th>
+        <th>Bookable</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let u of filtered">
+        <td>{{ u.vehicle?.name || '—' }}</td>
+        <td>{{ u.licencePlate || '—' }}</td>
+        <td>{{ u.pricePerDay ?? '—' }}</td>
+        <td>{{ u.bookable }}</td>
+        <td><button (click)="deleteUnit(u.id)">Delete</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

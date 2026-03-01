@@ -1,0 +1,42 @@
+<div class="bookable-units">
+  <h2>Available Units</h2>
+
+  <div class="filters">
+    <input type="number" placeholder="Max price" [(ngModel)]="maxPrice" />
+    <input type="number" placeholder="Min vehicle year" [(ngModel)]="minYear" />
+    <select [(ngModel)]="transmission">
+      <option value="">Any transmission</option>
+      <option value="manual">manual</option>
+      <option value="automatic">automatic</option>
+    </select>
+    <select [(ngModel)]="fuel">
+      <option value="">Any fuel</option>
+      <option value="diesel">diesel</option>
+      <option value="gasoline">gasoline</option>
+      <option value="electric">electric</option>
+      <option value="LPG">LPG</option>
+    </select>
+    <input type="number" placeholder="Min seats" [(ngModel)]="minSeats" />
+  </div>
+
+  <table>
+    <thead><tr><th>Vehicle</th><th>Licence</th><th>Price</th><th>Year</th><th>Seats</th><th></th></tr></thead>
+    <tbody>
+      <tr *ngFor="let u of filtered">
+        <td>{{ u.vehicle?.name }}</td>
+        <td>{{ u.licencePlate }}</td>
+        <td>{{ u.pricePerDay }}</td>
+        <td>{{ u.vehicle?.year }}</td>
+        <td>{{ u.vehicle?.numberOfSeats }}</td>
+        <td><button (click)="selectUnit(u)">Select</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="booking-form" *ngIf="selectedUnit">
+    <h3>Book unit: {{ selectedUnit.licencePlate }} ({{ selectedUnit.vehicle?.name }})</h3>
+    <label>Start: <input type="datetime-local" [(ngModel)]="bookingStart" /></label>
+    <label>End: <input type="datetime-local" [(ngModel)]="bookingEnd" /></label>
+    <div><button (click)="createBooking()">Create Booking</button> <button (click)="selectedUnit = undefined">Cancel</button></div>
+  </div>
+</div>

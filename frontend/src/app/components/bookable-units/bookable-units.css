@@ -1,0 +1,5 @@
+.bookable-units { padding: 12px; }
+.bookable-units .filters input, .bookable-units .filters select { margin-right:8px; padding:6px; }
+.bookable-units table { width:100%; border-collapse:collapse; margin-top:12px }
+.bookable-units th, .bookable-units td { border:1px solid #ddd; padding:8px; }
+.booking-form { margin-top:12px; padding:8px; border:1px solid #eee; }

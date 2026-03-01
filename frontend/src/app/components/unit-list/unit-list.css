@@ -1,0 +1,6 @@
+:host { display:block; }
+:host .toolbar { margin-bottom: 8px; }
+:host .units { width:100%; border-collapse:collapse; }
+:host .units th, :host .units td { border:1px solid #eee; padding:6px 8px; }
+:host .units th { background:#fafafa; }
+:host button { padding:4px 8px; }
