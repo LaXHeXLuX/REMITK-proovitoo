@@ -21,7 +21,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let u of filtered">
-        <td>{{ u.vehicle?.name || '—' }}</td>
+        <td>{{ u.vehicle.name || '—' }}</td>
         <td>{{ u['vin'] || '—' }}</td>
         <td>{{ u.licencePlate || '—' }}</td>
         <td>{{ u.pricePerDay ?? '—' }}</td>
