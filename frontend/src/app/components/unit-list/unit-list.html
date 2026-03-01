@@ -1,13 +1,18 @@
 <div class="unit-list">
   <div class="toolbar">
     <label><input type="checkbox" (change)="showOnlyBookable = $any($event.target).checked" /> Show only bookable</label>
-    <button (click)="addUnitPlaceholder()">Add Unit</button>
+    <button (click)="openCreate()">Add Unit</button>
+  </div>
+
+  <div *ngIf="showForm">
+    <app-unit-form [unit]="selectedUnit" (saved)="onSaved($event)" (closed)="onClosed()"></app-unit-form>
   </div>
 
   <table class="units">
     <thead>
       <tr>
         <th>Vehicle</th>
+        <th>VIN</th>
         <th>Licence</th>
         <th>Price / day</th>
         <th>Bookable</th>
@@ -17,10 +22,14 @@
     <tbody>
       <tr *ngFor="let u of filtered">
         <td>{{ u.vehicle?.name || '—' }}</td>
+        <td>{{ u['vin'] || '—' }}</td>
         <td>{{ u.licencePlate || '—' }}</td>
         <td>{{ u.pricePerDay ?? '—' }}</td>
         <td>{{ u.bookable }}</td>
-        <td><button (click)="deleteUnit(u.id)">Delete</button></td>
+        <td>
+          <button (click)="openEdit(u)">Edit</button>
+          <button (click)="deleteUnit(u.id)">Delete</button>
+        </td>
       </tr>
     </tbody>
   </table>

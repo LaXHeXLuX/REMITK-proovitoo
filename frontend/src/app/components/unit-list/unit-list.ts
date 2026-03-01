@@ -3,17 +3,20 @@ import { CommonModule } from '@angular/common';
 import { UnitService } from '../../services/unit';
 import { Unit } from '../../models/unit';
 import { NotificationService } from '../../services/notification.service';
+import { UnitForm } from '../unit-form/unit-form';
 
 @Component({
   selector: 'app-unit-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, UnitForm],
   templateUrl: './unit-list.html',
   styleUrls: ['./unit-list.css'],
 })
 export class UnitList implements OnInit {
   units: Unit[] = [];
   showOnlyBookable = false;
+  showForm = false;
+  selectedUnit?: Unit | null = null;
 
   constructor(private unitService: UnitService, private cdr: ChangeDetectorRef, private notif: NotificationService) {}
 
@@ -45,7 +48,8 @@ export class UnitList implements OnInit {
     });
   }
 
-  addUnitPlaceholder(): void {
-    this.notif.show('Add Unit form not implemented yet — extracting form next', 'info');
-  }
+  openCreate(): void { this.selectedUnit = null; this.showForm = true; }
+  openEdit(u: Unit): void { this.selectedUnit = u; this.showForm = true; }
+  onSaved(_: Unit): void { this.showForm = false; this.loadUnits(); }
+  onClosed(): void { this.showForm = false; }
 }

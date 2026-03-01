@@ -31,6 +31,7 @@
 				<td>{{ v.transmission }}</td>
 				<td>{{ v.year }}</td>
 				<td>
+					<button (click)="openEdit(v)">Edit</button>
 					<button (click)="deleteVehicle(v.id)">Delete</button>
 				</td>
 			</tr>

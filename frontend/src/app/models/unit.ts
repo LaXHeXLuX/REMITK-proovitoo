@@ -5,5 +5,6 @@ export interface Unit {
   vehicle: Vehicle;
   bookable: boolean;
   licencePlate?: string | null;
+  vin: string;
   pricePerDay?: number | null;
 }
