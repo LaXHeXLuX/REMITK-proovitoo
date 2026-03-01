@@ -1,6 +1,7 @@
 <div class="unit-list">
   <div class="toolbar">
     <label><input type="checkbox" (change)="showOnlyBookable = $any($event.target).checked" /> Show only bookable</label>
+    <button (click)="addUnitPlaceholder()">Add Unit</button>
   </div>
 
   <table class="units">
