@@ -30,9 +30,9 @@ Ei ole veel teinud. TODO!
 ## Käivitusjuhised
 1. Veendu, et sinu Postgresi server töötab.
 2. Loo andmebaas nimega `vehicle_booking`: `CREATE DATABASE vehicle_booking;`.
-3. Muuda failis [application.properties](src/main/resources/application.properties) vajadusel `spring.datasource` muutujaid.
+3. Muuda failis [application.properties](backend/src/main/resources/application.properties) vajadusel `spring.datasource` muutujaid.
 4. Käivitamine:
-   - **IDE**: ava fail [VehicleBookingApplication.java](src/main/java/ee/vehicleBooking/vehicleBooking/VehicleBookingApplication.java) ja vajuta "Run".
+   - **IDE**: ava fail [VehicleBookingApplication.java](backend/src/main/java/ee/vehicleBooking/vehicleBooking/VehicleBookingApplication.java) ja vajuta "Run".
    - **Käsurida (CLI)**: `./mvnw spring-boot:run`
 
 ### API testimine
@@ -62,4 +62,5 @@ vastuseks peaks olema loodud objekt (201 Created)
 ## Edasiarenduse võimalused
 - Suurem testide katvus
 - Autentimine
-- Põhjalikum logimine 
+- Läbimõeldud logimine
+- Booking tabelisse veerg `next_booking_start`
