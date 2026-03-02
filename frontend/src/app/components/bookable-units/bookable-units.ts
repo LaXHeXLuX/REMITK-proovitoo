@@ -51,7 +51,7 @@ export class BookableUnits implements OnInit {
     this.desiredEnd = `${this.desiredDateEnd}T${this.desiredTimeEnd}`;
     this.unitService.getAvailable(this.desiredStart, this.desiredEnd).subscribe({
       next: (data) => { this.units = data; this.searched = true; this.cdr.detectChanges(); },
-      error: (err) => { console.error('Error loading available units', err); alert('Error loading available units'); }
+      error: (err) => { console.error('Error loading available vehicles', err); alert('Error loading available vehicles'); }
     });
   }
 
