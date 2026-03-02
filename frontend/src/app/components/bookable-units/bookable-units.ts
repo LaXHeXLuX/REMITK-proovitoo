@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { UnitService } from '../../services/unit';
 import { BookingService } from '../../services/booking';
 import { Unit } from '../../models/unit';
-import { standardSchemaError } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-bookable-units',
@@ -15,30 +14,23 @@ import { standardSchemaError } from '@angular/forms/signals';
 })
 export class BookableUnits implements OnInit {
   units: Unit[] = [];
-  // date range
   desiredStart: string = '';
   desiredEnd: string = '';
-  // whether a search has been performed
   searched: boolean = false;
-  // separate date/time inputs for cleaner 15-min selection
   desiredDateStart: string = '';
   desiredTimeStart: string = '';
   desiredDateEnd: string = '';
   desiredTimeEnd: string = '';
-  // configurable business hours (easy to change)
   dayStartHour: number = 8;
   dayEndHour: number = 20;
   timeOptions: string[] = [];
 
-  // filters
   priceFrom?: number | null = null;
   priceTo?: number | null = null;
   minSeats?: number | null = null;
-  // transmission/fuel checkbox maps
   transmissionFilters: Record<string, boolean> = { manual: false, automatic: false };
   fuelFilters: Record<string, boolean> = { diesel: false, gasoline: false, electric: false, LPG: false };
 
-  // booking form
   selectedUnit?: Unit;
   bookingStart: string = '';
   bookingEnd: string = '';
@@ -54,7 +46,6 @@ export class BookableUnits implements OnInit {
   ngOnInit(): void {}
 
   fetchAvailable(): void {
-    // require date+time parts (clean UI)
     if (!this.desiredDateStart || !this.desiredTimeStart || !this.desiredDateEnd || !this.desiredTimeEnd) return alert('Provide start and end date/time');
     this.desiredStart = `${this.desiredDateStart}T${this.desiredTimeStart}`;
     this.desiredEnd = `${this.desiredDateEnd}T${this.desiredTimeEnd}`;
@@ -65,7 +56,6 @@ export class BookableUnits implements OnInit {
   }
 
   onDesiredChange(): void {
-    // any change to desired date/time clears previous search until user clicks Find
     this.searched = false;
     this.units = [];
     this.desiredStart = '';
@@ -80,18 +70,14 @@ export class BookableUnits implements OnInit {
   }
 
   private validateDesiredRange(): void {
-    // clear invalid desired start/time if it becomes earlier than now
     const now = new Date();
     const start = this.combineDateTime(this.desiredDateStart, this.desiredTimeStart);
     if (start && start.getTime() < now.getTime()) {
       this.desiredTimeStart = '';
     }
-
-    // clear invalid desired end/time if it's <= start or before now
     const end = this.combineDateTime(this.desiredDateEnd, this.desiredTimeEnd);
-
     if (end) {
-      const checks = [now, start]
+      const checks = [now, start];
       checks.forEach(check => {
         if (check === null) return;
         if (end.getTime() < check.getTime()) {
@@ -102,8 +88,6 @@ export class BookableUnits implements OnInit {
         }
       });
     }
-
-    // also ensure time selections which are currently disabled get cleared
     if (this.desiredTimeStart && this.isDesiredStartTimeDisabled(this.desiredTimeStart)) this.desiredTimeStart = '';
     if (this.desiredTimeEnd && this.isDesiredEndTimeDisabled(this.desiredTimeEnd)) this.desiredTimeEnd = '';
   }
@@ -112,7 +96,6 @@ export class BookableUnits implements OnInit {
     const opts: string[] = [];
     for (let h = this.dayStartHour; h <= this.dayEndHour; h++) {
       for (let m = 0; m < 60; m += 15) {
-        // if we've reached the end hour, only include :00
         if (h === this.dayEndHour && m > 0) continue;
         const hh = String(h).padStart(2, '0');
         const mm = String(m).padStart(2, '0');
@@ -150,7 +133,6 @@ export class BookableUnits implements OnInit {
     if (this.desiredDateStart && this.desiredDateEnd === this.desiredDateStart && this.desiredTimeStart) {
       return this.timeToMinutes(opt) <= this.timeToMinutes(this.desiredTimeStart);
     }
-    // if end is today, cannot pick before now
     if (this.desiredDateEnd === this.todayString()) return this.timeToMinutes(opt) < this.nowMinutes();
     return false;
   }
@@ -172,16 +154,12 @@ export class BookableUnits implements OnInit {
 
   get filtered(): Unit[] {
     return this.units.filter(u => {
-      // price range
       const price = u.pricePerDay ?? 0;
       if (this.priceFrom != null && price < +this.priceFrom) return false;
       if (this.priceTo != null && price > +this.priceTo) return false;
-      // seats
       if (this.minSeats != null && u.vehicle && u.vehicle.numberOfSeats < +this.minSeats) return false;
-      // transmission filters: if any selected, vehicle.transmission must be one of them
       const transSelected = Object.keys(this.transmissionFilters).filter(k => this.transmissionFilters[k]);
       if (transSelected.length > 0 && u.vehicle && !transSelected.includes(u.vehicle.transmission)) return false;
-      // fuel filters
       const fuelSelected = Object.keys(this.fuelFilters).filter(k => this.fuelFilters[k]);
       if (fuelSelected.length > 0 && u.vehicle && !fuelSelected.includes(u.vehicle.fuel)) return false;
       return true;
@@ -190,7 +168,6 @@ export class BookableUnits implements OnInit {
 
   selectUnit(u: Unit) {
     this.selectedUnit = u;
-    // prefill booking parts from the desired search range if available
     if (this.desiredDateStart && this.desiredTimeStart) {
       this.bookingDateStart = this.desiredDateStart;
       this.bookingTimeStart = this.desiredTimeStart;
@@ -208,9 +185,7 @@ export class BookableUnits implements OnInit {
   }
 
   onBookingChange(): void {
-    // validate booking parts two-way
     this.validateBookingRange();
-    // keep assembled strings in sync when possible
     this.bookingStart = this.bookingDateStart && this.bookingTimeStart ? `${this.bookingDateStart}T${this.bookingTimeStart}` : '';
     this.bookingEnd = this.bookingDateEnd && this.bookingTimeEnd ? `${this.bookingDateEnd}T${this.bookingTimeEnd}` : '';
   }
@@ -235,14 +210,15 @@ export class BookableUnits implements OnInit {
 
   createBooking(): void {
     if (!this.selectedUnit) return alert('Select a unit first');
-    // assemble bookingStart/End from parts when available
     if (this.bookingDateStart && this.bookingTimeStart && this.bookingDateEnd && this.bookingTimeEnd) {
       this.bookingStart = `${this.bookingDateStart}T${this.bookingTimeStart}`;
       this.bookingEnd = `${this.bookingDateEnd}T${this.bookingTimeEnd}`;
     }
     if (!this.bookingStart || !this.bookingEnd) return alert('Specify start and end');
+    const clientName = prompt('Enter your name:');
+    if (!clientName) return alert('Client name is required');
     const payload = {
-      clientName: 'Anonymous',
+      clientName,
       unit: { id: this.selectedUnit.id },
       bookingStart: this.bookingStart,
       bookingEnd: this.bookingEnd,
@@ -260,7 +236,6 @@ export class BookableUnits implements OnInit {
   }
 
   private totalDaysForRange(): number {
-    // use desiredStart/End if set, otherwise bookingStart/End
     const startIso = this.desiredStart || this.bookingStart;
     const endIso = this.desiredEnd || this.bookingEnd;
     const s = this.parseISOToDate(startIso);
