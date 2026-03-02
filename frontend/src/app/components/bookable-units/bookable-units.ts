@@ -51,7 +51,10 @@ export class BookableUnits implements OnInit {
 	ngOnInit(): void { }
 
 	fetchAvailable(): void {
-		if (!this.desiredDateStart || !this.desiredTimeStart || !this.desiredDateEnd || !this.desiredTimeEnd) return alert('Provide start and end date/time');
+		if (!this.desiredDateStart || !this.desiredTimeStart || !this.desiredDateEnd || !this.desiredTimeEnd) {
+			this.notif.showError('Provide start and end date/time');
+			return;
+		}
 		this.desiredStart = `${this.desiredDateStart}T${this.desiredTimeStart}`;
 		this.desiredEnd = `${this.desiredDateEnd}T${this.desiredTimeEnd}`;
 		this.unitService.getAvailable(this.desiredStart, this.desiredEnd).subscribe({
@@ -217,13 +220,22 @@ export class BookableUnits implements OnInit {
 	}
 
 	createBooking(): void {
-		if (!this.selectedUnit) return alert('Select a unit first');
+		if (!this.selectedUnit) {
+			this.notif.showError('Select a unit first');
+			return;
+		}
 		if (this.bookingDateStart && this.bookingTimeStart && this.bookingDateEnd && this.bookingTimeEnd) {
 			this.bookingStart = `${this.bookingDateStart}T${this.bookingTimeStart}`;
 			this.bookingEnd = `${this.bookingDateEnd}T${this.bookingTimeEnd}`;
 		}
-		if (!this.bookingStart || !this.bookingEnd) return alert('Specify start and end');
-		if (!this.clientName || this.clientName.length == 0) return alert('Client name is required');
+		if (!this.bookingStart || !this.bookingEnd) {
+			this.notif.showError('Specify start and end');
+			return;
+		}
+		if (!this.clientName || this.clientName.length == 0) {
+			this.notif.showError('Client name is required');
+			return;
+		}
 		const payload = {
 			clientName: this.clientName,
 			unit: { id: this.selectedUnit.id },
