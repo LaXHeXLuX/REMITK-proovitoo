@@ -161,7 +161,7 @@ export class BookableUnits implements OnInit {
       const transSelected = Object.keys(this.transmissionFilters).filter(k => this.transmissionFilters[k]);
       if (transSelected.length > 0 && u.vehicle && !transSelected.includes(u.vehicle.transmission)) return false;
       const fuelSelected = Object.keys(this.fuelFilters).filter(k => this.fuelFilters[k]);
-      if (fuelSelected.length > 0 && u.vehicle && !fuelSelected.includes(u.vehicle.fuel)) return false;
+      if (fuelSelected.length > 0 && u.vehicle && !fuelFilters.includes(u.vehicle.fuel)) return false;
       return true;
     });
   }
