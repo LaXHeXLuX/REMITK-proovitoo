@@ -40,7 +40,7 @@
   </div>
 
   <table *ngIf="searched">
-    <thead><tr><th>Vehicle Description</th><th>Price</th><th></th></tr></thead>
+    <thead><tr><th>Vehicle</th><th>Price</th><th></th></tr></thead>
     <tbody>
       <tr *ngFor="let u of filtered">
         <td>{{ u.vehicle.company }} {{ u.vehicle.name }} {{ u.vehicle.year }}</td>
