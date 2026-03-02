@@ -33,7 +33,6 @@ export class BookableUnits implements OnInit {
   // filters
   priceFrom?: number | null = null;
   priceTo?: number | null = null;
-  minYear?: number | null = null;
   minSeats?: number | null = null;
   // transmission/fuel checkbox maps
   transmissionFilters: Record<string, boolean> = { manual: false, automatic: false };
@@ -177,8 +176,6 @@ export class BookableUnits implements OnInit {
       const price = u.pricePerDay ?? 0;
       if (this.priceFrom != null && price < +this.priceFrom) return false;
       if (this.priceTo != null && price > +this.priceTo) return false;
-      // year
-      if (this.minYear != null && u.vehicle && u.vehicle.year < +this.minYear) return false;
       // seats
       if (this.minSeats != null && u.vehicle && u.vehicle.numberOfSeats < +this.minSeats) return false;
       // transmission filters: if any selected, vehicle.transmission must be one of them
@@ -254,5 +251,30 @@ export class BookableUnits implements OnInit {
       next: () => { alert('Booking created'); this.selectedUnit = undefined; this.bookingStart = ''; this.bookingEnd = ''; if (this.desiredStart && this.desiredEnd) this.fetchAvailable(); },
       error: (err) => { console.error('Error creating booking', err); alert('Error creating booking'); }
     });
+  }
+
+  private parseISOToDate(iso?: string): Date | null {
+    if (!iso) return null;
+    const d = new Date(iso);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  private totalDaysForRange(): number {
+    // use desiredStart/End if set, otherwise bookingStart/End
+    const startIso = this.desiredStart || this.bookingStart;
+    const endIso = this.desiredEnd || this.bookingEnd;
+    const s = this.parseISOToDate(startIso);
+    const e = this.parseISOToDate(endIso);
+    if (!s || !e) return 1;
+    const msPerDay = 24 * 60 * 60 * 1000;
+    const diff = e.getTime() - s.getTime();
+    if (diff <= 0) return 1;
+    return Math.max(1, Math.ceil(diff / msPerDay));
+  }
+
+  computePrice(u: Unit): number {
+    const days = this.totalDaysForRange();
+    const pricePerDay = u.pricePerDay ?? 0;
+    return pricePerDay * days;
   }
 }
