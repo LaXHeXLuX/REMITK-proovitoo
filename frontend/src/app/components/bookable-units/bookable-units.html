@@ -43,7 +43,13 @@
     <thead><tr><th>Vehicle</th><th>Price</th><th></th></tr></thead>
     <tbody>
       <tr *ngFor="let u of filtered">
-        <td>{{ u.vehicle.company }} {{ u.vehicle.name }} {{ u.vehicle.year }}</td>
+        <td>
+          {{ u.vehicle.company }} {{ u.vehicle.name }} {{ u.vehicle.year }}
+          <br>
+          {{ u.vehicle.transmission }}
+          <br>
+          {{ u.vehicle.fuel }}
+        </td>
         <td>{{ computePrice(u) }}</td>
         <td><button (click)="selectUnit(u)">Select</button></td>
       </tr>
