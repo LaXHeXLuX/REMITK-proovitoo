@@ -1,4 +1,13 @@
 <div class="booking-list">
+  <div class="toolbar">
+    <label><input type="checkbox" (change)="showCurrent = $any($event.target).checked" /> Show current</label>
+    <button (click)="openCreate()">Add Booking</button>
+  </div>
+
+  <div *ngIf="showForm">
+    <app-booking-form [booking]="selectedBooking" (saved)="onSaved($event)" (closed)="onClosed()"></app-booking-form>
+  </div>
+
   <table class="bookings">
     <thead>
       <tr>
@@ -11,13 +20,16 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let b of bookings">
+      <tr *ngFor="let b of filtered">
         <td>{{ b.clientName }}</td>
         <td>{{ b.unit.vehicle.name || '—' }}</td>
         <td>{{ b.unit.licencePlate || '—' }}</td>
-        <td>{{ b.bookingStart }}</td>
-        <td>{{ b.bookingEnd }}</td>
-        <td><button (click)="deleteBooking(b.id)">Delete</button></td>
+        <td>{{ b.bookingStart | date: 'dd.MM.yyyy HH:mm' }}</td>
+        <td>{{ b.bookingEnd | date: 'dd.MM.yyyy HH:mm' }}</td>
+        <td>
+          <button (click)="openEdit(b)">Edit</button>
+          <button (click)="deleteBooking(b.id)">Delete</button>
+        </td>
       </tr>
     </tbody>
   </table>

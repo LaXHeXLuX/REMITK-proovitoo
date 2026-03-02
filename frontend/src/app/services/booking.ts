@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Booking } from '../models/booking';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,15 @@ export class BookingService {
   constructor(private http: HttpClient) {}
 
   getBookings(): Observable<Booking[]> {
-    return this.http.get<Booking[]>(this.apiUrl);
+    return this.http.get<Booking[]>(this.apiUrl).pipe(
+      map((bookings: Booking[]) => {
+        return bookings.map(b => ({
+          ...b,
+          bookingStart: new Date(b.bookingStart),
+          bookingEnd: new Date(b.bookingEnd)
+        }));
+      })
+    );
   }
 
   createBooking(booking: Booking): Observable<Booking> {
