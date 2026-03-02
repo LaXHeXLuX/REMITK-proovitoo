@@ -1,1 +1,239 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+	--primary: #2266ee;
+	--primary-hover: #1155dd;
+	--bg-body: #fafafc;
+	--bg-card: #ffffff;
+	--text-main: #1e293b;
+	--text-muted: #64748b;
+	--border: #ddeeee;
+	--radius: 8px;
+	--shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+}
+
+body {
+	margin: 0;
+	font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+	background-color: var(--bg-body);
+	color: var(--text-main);
+}
+
+a {
+	text-decoration: none;
+	color: var(--primary);
+	font-weight: 500;
+}
+
+button {
+	cursor: pointer;
+	padding: 8px 16px;
+	border-radius: var(--radius);
+	border: 1px solid var(--border);
+	background: var(--bg-card);
+	transition: all 0.2s;
+}
+
+button:hover {
+	background: #fafafe;
+}
+
+button.btn-primary {
+	background: var(--primary);
+	color: #ffffff;
+	border: none;
+}
+
+button.btn-primary:hover {
+	background: var(--primary-hover);
+}
+
+.data-table {
+	width: 100%;
+	border-collapse: collapse;
+	background: var(--bg-card);
+	border-radius: var(--radius);
+	overflow: hidden;
+	/* Clips corners of the table */
+	box-shadow: var(--shadow);
+}
+
+.data-table th {
+	background: #eeffff;
+	text-align: left;
+	padding: 12px 16px;
+	font-size: 0.85rem;
+	text-transform: uppercase;
+	color: var(--text-muted);
+}
+
+.data-table td {
+	padding: 12px 16px;
+	border-bottom: 1px solid var(--border);
+}
+
+.data-table tr:hover {
+	background-color: #fafafc;
+}
+
+/* Standard Container for all List Pages */
+.page-container {
+	max-width: 1200px;
+	margin: 2rem auto;
+	padding: 0 1rem;
+}
+
+/* The Top Bar (Search + Action Button) */
+.toolbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1.5rem;
+	gap: 1rem;
+}
+
+.search-input {
+	flex: 1;
+	max-width: 400px;
+	padding: 0.6rem 1rem;
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	font-size: 0.95rem;
+	outline: none;
+}
+
+.search-input:focus {
+	border-color: var(--primary);
+	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Action Buttons (Edit/Delete) in Table */
+.btn-icon {
+	padding: 4px 8px;
+	font-size: 0.85rem;
+	margin-left: 4px;
+}
+
+.btn-danger {
+	color: #dc2626;
+	border-color: #fee2e2;
+}
+
+.btn-danger:hover {
+	background: #fef2f2;
+}
+
+/* Standard Form Layout */
+.form-card {
+	background: var(--bg-card);
+	padding: 2rem;
+	border-radius: var(--radius);
+	border: 1px solid var(--border);
+	box-shadow: var(--shadow);
+	margin-bottom: 2rem;
+}
+
+.form-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	/* Two columns */
+	gap: 1.5rem;
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.form-group label {
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--text-muted);
+}
+
+.form-group input,
+.form-group select {
+	padding: 0.6rem;
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	font-size: 1rem;
+}
+
+.form-actions {
+	margin-top: 2rem;
+	display: flex;
+	justify-content: flex-end;
+	gap: 1rem;
+	border-top: 1px solid var(--border);
+	padding-top: 1.5rem;
+}
+
+/* Error Styling */
+.alert-error {
+	background-color: #fef2f2;
+	border-left: 4px solid #dc2626;
+	color: #991b1b;
+	padding: 1rem;
+	margin-bottom: 1.5rem;
+	font-size: 0.9rem;
+	border-radius: 4px;
+}
+
+/* Form Action Alignment */
+.form-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 12px;
+	margin-top: 2rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--border);
+}
+
+/* Responsive Grid: Switch to 1 column on mobile */
+@media (max-width: 600px) {
+	.form-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.main-nav {
+	background: white;
+	padding: 1rem 2rem;
+	border-bottom: 1px solid var(--border);
+	display: flex;
+	gap: 2rem;
+	margin-bottom: 1rem;
+}
+
+.main-nav a {
+	color: var(--text-muted);
+	font-weight: 600;
+	padding: 0.5rem 1rem;
+	border-radius: var(--radius);
+}
+
+.main-nav a.active {
+	color: var(--primary);
+	background: #eff6ff;
+}
+
+.checkbox-group {
+	flex-direction: row !important;
+	/* Override the column layout */
+	align-items: center;
+	gap: 10px;
+	padding-top: 1.5rem;
+	/* Aligns it visually with the other row's inputs */
+}
+
+.checkbox-group input {
+	width: 18px;
+	height: 18px;
+	cursor: pointer;
+}
+
+.checkbox-group label {
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}

@@ -1,0 +1,6 @@
+<div class="notifications" *ngIf="(notif.notifications$ | async) as notes">
+	<div *ngFor="let n of notes" class="note" [class.error]="n.type==='error'" [class.success]="n.type==='success'">
+		<span>{{ n.message }}</span>
+		<button (click)="dismiss(n.id)">✕</button>
+	</div>
+</div>

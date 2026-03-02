@@ -7,10 +7,10 @@ import { provideHttpClient } from '@angular/common/http';
 import { ApiErrorInterceptor } from './interceptors/api-error.interceptor';
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
-    provideHttpClient(),
-    { provide: HTTP_INTERCEPTORS, useClass: ApiErrorInterceptor, multi: true }
-  ]
+	providers: [
+		provideBrowserGlobalErrorListeners(),
+		provideRouter(routes),
+		provideHttpClient(),
+		{ provide: HTTP_INTERCEPTORS, useClass: ApiErrorInterceptor, multi: true }
+	]
 };

@@ -6,50 +6,50 @@ import { NotificationService } from '../../services/notification.service';
 import { UnitForm } from '../unit-form/unit-form';
 
 @Component({
-  selector: 'app-unit-list',
-  standalone: true,
-  imports: [CommonModule, UnitForm],
-  templateUrl: './unit-list.html',
-  styleUrls: ['./unit-list.css'],
+	selector: 'app-unit-list',
+	standalone: true,
+	imports: [CommonModule, UnitForm],
+	templateUrl: './unit-list.html',
+	styleUrls: ['../data-list.css']
 })
 export class UnitList implements OnInit {
-  units: Unit[] = [];
-  showOnlyBookable = false;
-  showForm = false;
-  selectedUnit?: Unit | null = null;
+	units: Unit[] = [];
+	showOnlyBookable = false;
+	showForm = false;
+	selectedUnit?: Unit | null = null;
 
-  constructor(private unitService: UnitService, private cdr: ChangeDetectorRef, private notif: NotificationService) {}
+	constructor(private unitService: UnitService, private cdr: ChangeDetectorRef, private notif: NotificationService) { }
 
-  ngOnInit(): void {
-    this.loadUnits();
-  }
+	ngOnInit(): void {
+		this.loadUnits();
+	}
 
-  loadUnits(): void {
-    this.unitService.getUnits().subscribe({
-      next: (data) => {
-        this.units = data;
-        this.cdr.detectChanges();
-      },
-      error: (err) => console.error('Error loading units', err),
-    });
-  }
+	loadUnits(): void {
+		this.unitService.getUnits().subscribe({
+			next: (data) => {
+				this.units = data;
+				this.cdr.detectChanges();
+			},
+			error: (err) => console.error('Error loading units', err),
+		});
+	}
 
-  get filtered(): Unit[] {
-    if (!this.showOnlyBookable) return this.units;
-    return this.units.filter((u) => u.bookable);
-  }
+	get filtered(): Unit[] {
+		if (!this.showOnlyBookable) return this.units;
+		return this.units.filter((u) => u.bookable);
+	}
 
-  deleteUnit(id?: number): void {
-    if (!id) return;
-    if (!confirm('Delete this unit?')) return;
-    this.unitService.deleteUnit(id).subscribe({
-      next: () => this.loadUnits(),
-      error: (err) => console.error('Error deleting unit', err),
-    });
-  }
+	deleteUnit(id?: number): void {
+		if (!id) return;
+		if (!confirm('Delete this unit?')) return;
+		this.unitService.deleteUnit(id).subscribe({
+			next: () => this.loadUnits(),
+			error: (err) => console.error('Error deleting unit', err),
+		});
+	}
 
-  openCreate(): void { this.selectedUnit = null; this.showForm = true; }
-  openEdit(u: Unit): void { this.selectedUnit = u; this.showForm = true; }
-  onSaved(_: Unit): void { this.showForm = false; this.loadUnits(); }
-  onClosed(): void { this.showForm = false; }
+	openCreate(): void { this.selectedUnit = null; this.showForm = true; }
+	openEdit(u: Unit): void { this.selectedUnit = u; this.showForm = true; }
+	onSaved(_: Unit): void { this.showForm = false; this.loadUnits(); }
+	onClosed(): void { this.showForm = false; }
 }

@@ -11,10 +11,12 @@ export const routes: Routes = [
 	{ path: 'client', component: BookableUnits },
 
 	// Admin-facing (reuse existing lists inside AdminShell)
-	{ path: 'admin', component: AdminShell, children: [
-		{ path: '', redirectTo: 'vehicles', pathMatch: 'full' },
-		{ path: 'vehicles', component: VehicleList },
-		{ path: 'units', component: UnitList },
-		{ path: 'bookings', component: BookingList },
-	]},
+	{
+		path: 'admin', component: AdminShell, children: [
+			{ path: '', redirectTo: 'vehicles', pathMatch: 'full' },
+			{ path: 'vehicles', component: VehicleList },
+			{ path: 'units', component: UnitList },
+			{ path: 'bookings', component: BookingList },
+		]
+	},
 ];

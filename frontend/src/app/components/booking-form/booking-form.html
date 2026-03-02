@@ -1,0 +1,41 @@
+<div class="form-card">
+	<h3>{{ isEdit ? 'Edit Booking' : 'Create New Booking' }}</h3>
+
+	<div *ngIf="formError" class="alert-error">
+		{{ formError }}
+	</div>
+
+	<div class="form-grid">
+		<div class="form-group">
+			<label>Assigned Vehicle Unit</label>
+			<select [(ngModel)]="formUnitId">
+				<option [ngValue]="undefined">-- Select Available Unit --</option>
+				<option *ngFor="let u of units" [ngValue]="u.id">
+					{{ u.vehicle.name }} ({{ u.licence }})
+				</option>
+			</select>
+		</div>
+
+		<div class="form-group">
+			<label>Client Full Name</label>
+			<input [(ngModel)]="formClientName" placeholder="e.g. John Doe" />
+		</div>
+
+		<div class="form-group">
+			<label>Pickup Date</label>
+			<input type="date" [(ngModel)]="formBookingStart" />
+		</div>
+
+		<div class="form-group">
+			<label>Return Date</label>
+			<input type="date" [(ngModel)]="formBookingEnd" />
+		</div>
+	</div>
+
+	<div class="form-actions">
+		<button (click)="cancel()">Cancel</button>
+		<button class="btn-primary" (click)="save()">
+			{{ isEdit ? 'Confirm Booking' : 'Create Booking' }}
+		</button>
+	</div>
+</div>

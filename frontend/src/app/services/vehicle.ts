@@ -4,26 +4,26 @@ import { Vehicle } from '../models/vehicle';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root',
+	providedIn: 'root',
 })
 export class VehicleService {
-  private apiUrl = '/api/vehicles';
+	private apiUrl = '/api/vehicles';
 
-  constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient) { }
 
-  getVehicles(): Observable<Vehicle[]> {
-    return this.http.get<Vehicle[]>(this.apiUrl);
-  }
+	getVehicles(): Observable<Vehicle[]> {
+		return this.http.get<Vehicle[]>(this.apiUrl);
+	}
 
-  createVehicle(vehicle: Vehicle): Observable<Vehicle> {
-    return this.http.post<Vehicle>(this.apiUrl, vehicle);
-  }
+	createVehicle(vehicle: Vehicle): Observable<Vehicle> {
+		return this.http.post<Vehicle>(this.apiUrl, vehicle);
+	}
 
-  patchVehicle(id: number, updates: Partial<Vehicle>): Observable<Vehicle> {
-    return this.http.patch<Vehicle>(`${this.apiUrl}/${id}`, updates);
-  }
+	patchVehicle(id: number, updates: Partial<Vehicle>): Observable<Vehicle> {
+		return this.http.patch<Vehicle>(`${this.apiUrl}/${id}`, updates);
+	}
 
-  deleteVehicle(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
+	deleteVehicle(id: number): Observable<void> {
+		return this.http.delete<void>(`${this.apiUrl}/${id}`);
+	}
 }

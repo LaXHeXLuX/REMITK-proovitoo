@@ -1,0 +1,61 @@
+:host {
+	display: block;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+:host .toolbar {
+	margin-bottom: 12px;
+}
+
+:host .toolbar input {
+	padding: 6px 8px;
+	width: 100%;
+	max-width: 360px;
+	box-sizing: border-box;
+}
+
+:host .vehicles {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+:host .vehicles th,
+:host .vehicles td {
+	border: 1px solid #ddd;
+	padding: 8px;
+}
+
+:host .vehicles th {
+	background: #f6f6f6;
+	text-align: left;
+}
+
+:host .vehicles tbody tr:nth-child(even) {
+	background: #fafafa;
+}
+
+:host .vehicles button {
+	padding: 4px 8px;
+}
+
+/* form */
+:host .form {
+	margin: 12px 0 18px;
+	padding: 8px;
+	border: 1px solid #eee;
+	background: #fff;
+}
+
+:host .form .row {
+	margin-bottom: 8px;
+}
+
+:host .form input,
+:host .form select {
+	padding: 6px 8px;
+	margin-right: 8px;
+}
+
+:host .form .actions {
+	margin-top: 8px;
+}

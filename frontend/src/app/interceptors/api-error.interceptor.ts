@@ -6,15 +6,15 @@ import { NotificationService } from '../services/notification.service';
 
 @Injectable()
 export class ApiErrorInterceptor implements HttpInterceptor {
-  constructor(private notif: NotificationService) {}
+	constructor(private notif: NotificationService) { }
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(req).pipe(
-      catchError((err: HttpErrorResponse) => {
-        const msg = err?.error?.message || err.message || 'API request failed';
-        this.notif.showError(`Request failed: ${msg}`);
-        return throwError(() => err);
-      })
-    );
-  }
+	intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+		return next.handle(req).pipe(
+			catchError((err: HttpErrorResponse) => {
+				const msg = err?.error?.message || err.message || 'API request failed';
+				this.notif.showError(`Request failed: ${msg}`);
+				return throwError(() => err);
+			})
+		);
+	}
 }

@@ -4,35 +4,35 @@ import { Observable } from 'rxjs';
 import { Unit } from '../models/unit';
 
 @Injectable({
-  providedIn: 'root',
+	providedIn: 'root',
 })
 export class UnitService {
-  private apiUrl = '/api/units';
+	private apiUrl = '/api/units';
 
-  constructor(private http: HttpClient) {}
+	constructor(private http: HttpClient) { }
 
-  getUnits(): Observable<Unit[]> {
-    return this.http.get<Unit[]>(this.apiUrl);
-  }
+	getUnits(): Observable<Unit[]> {
+		return this.http.get<Unit[]>(this.apiUrl);
+	}
 
-  getBookableUnits(): Observable<Unit[]> {
-    return this.http.get<Unit[]>(`${this.apiUrl}/bookable`);
-  }
+	getBookableUnits(): Observable<Unit[]> {
+		return this.http.get<Unit[]>(`${this.apiUrl}/bookable`);
+	}
 
-  getAvailable(start: string, end: string): Observable<Unit[]> {
-    const params = `?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
-    return this.http.get<Unit[]>(`${this.apiUrl}/available${params}`);
-  }
+	getAvailable(start: string, end: string): Observable<Unit[]> {
+		const params = `?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
+		return this.http.get<Unit[]>(`${this.apiUrl}/available${params}`);
+	}
 
-  createUnit(unit: Unit): Observable<Unit> {
-    return this.http.post<Unit>(this.apiUrl, unit);
-  }
+	createUnit(unit: Unit): Observable<Unit> {
+		return this.http.post<Unit>(this.apiUrl, unit);
+	}
 
-  patchUnit(id: number, updates: Partial<Unit>): Observable<Unit> {
-    return this.http.patch<Unit>(`${this.apiUrl}/${id}`, updates);
-  }
+	patchUnit(id: number, updates: Partial<Unit>): Observable<Unit> {
+		return this.http.patch<Unit>(`${this.apiUrl}/${id}`, updates);
+	}
 
-  deleteUnit(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
+	deleteUnit(id: number): Observable<void> {
+		return this.http.delete<void>(`${this.apiUrl}/${id}`);
+	}
 }

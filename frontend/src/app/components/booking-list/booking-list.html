@@ -1,36 +1,37 @@
-<div class="booking-list">
-  <div class="toolbar">
-    <label><input type="checkbox" (change)="showCurrent = $any($event.target).checked" /> Show current</label>
-    <button (click)="openCreate()">Add Booking</button>
-  </div>
+<div class="page-container">
+	<div class="toolbar">
+		<label><input type="checkbox" (change)="showCurrent = $any($event.target).checked" /> Show current</label>
+		<button (click)="openCreate()">Add Booking</button>
+	</div>
 
-  <div *ngIf="showForm">
-    <app-booking-form [booking]="selectedBooking" (saved)="onSaved($event)" (closed)="onClosed()"></app-booking-form>
-  </div>
+	<div *ngIf="showForm">
+		<app-booking-form [booking]="selectedBooking" (saved)="onSaved($event)"
+			(closed)="onClosed()"></app-booking-form>
+	</div>
 
-  <table class="bookings">
-    <thead>
-      <tr>
-        <th>Client</th>
-        <th>Vehicle</th>
-        <th>Unit</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let b of filtered">
-        <td>{{ b.clientName }}</td>
-        <td>{{ b.unit.vehicle.name || '—' }}</td>
-        <td>{{ b.unit.licencePlate || '—' }}</td>
-        <td>{{ b.bookingStart | date: 'dd.MM.yyyy HH:mm' }}</td>
-        <td>{{ b.bookingEnd | date: 'dd.MM.yyyy HH:mm' }}</td>
-        <td>
-          <button (click)="openEdit(b)">Edit</button>
-          <button (click)="deleteBooking(b.id)">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+	<table class="data-table">
+		<thead>
+			<tr>
+				<th>Client</th>
+				<th>Vehicle</th>
+				<th>Unit</th>
+				<th>Start</th>
+				<th>End</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let b of filtered">
+				<td>{{ b.clientName }}</td>
+				<td>{{ b.unit.vehicle.name || '—' }}</td>
+				<td>{{ b.unit.licencePlate || '—' }}</td>
+				<td>{{ b.bookingStart | date: 'dd.MM.yyyy HH:mm' }}</td>
+				<td>{{ b.bookingEnd | date: 'dd.MM.yyyy HH:mm' }}</td>
+				<td>
+					<button class="btn-icon" (click)="openEdit(b)">Edit</button>
+					<button class="btn-icon btn-danger" (click)="deleteBooking(b.id)">Delete</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </div>

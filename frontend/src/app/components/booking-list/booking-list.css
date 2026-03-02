@@ -1,5 +1,0 @@
-:host { display:block; }
-:host .bookings { width:100%; border-collapse:collapse; }
-:host .bookings th, :host .bookings td { border:1px solid #eee; padding:6px 8px; }
-:host .bookings th { background:#fafafa; }
-:host button { padding:4px 8px; }

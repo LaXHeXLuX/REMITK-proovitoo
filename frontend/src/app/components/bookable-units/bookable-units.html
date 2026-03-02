@@ -1,77 +1,88 @@
 <div class="bookable-units">
-  <h2>Available vehicles</h2>
+	<h2>Available vehicles</h2>
 
-  <div class="filters">
-    <label>Start:
-      <input type="date" [(ngModel)]="desiredDateStart" (input)="onDesiredChange()" [min]="todayString()" />
-      <select [(ngModel)]="desiredTimeStart" (change)="onDesiredChange()">
-        <option value="">--</option>
-        <option *ngFor="let t of timeOptions" [value]="t" [disabled]="isDesiredStartTimeDisabled(t)">{{ t }}</option>
-      </select>
-    </label>
-    <label>End:
-      <input type="date" [(ngModel)]="desiredDateEnd" (input)="onDesiredChange()" [min]="desiredDateStart || todayString()" />
-      <select [(ngModel)]="desiredTimeEnd" (change)="onDesiredChange()">
-        <option value="">--</option>
-        <option *ngFor="let t of timeOptions" [value]="t" [disabled]="isDesiredEndTimeDisabled(t)">{{ t }}</option>
-      </select>
-    </label>
-    <button (click)="fetchAvailable()">Find Available</button>
+	<div class="filters">
+		<label>Start:
+			<input type="date" [(ngModel)]="desiredDateStart" (input)="onDesiredChange()" [min]="todayString()" />
+			<select [(ngModel)]="desiredTimeStart" (change)="onDesiredChange()">
+				<option value="">--</option>
+				<option *ngFor="let t of timeOptions" [value]="t" [disabled]="isDesiredStartTimeDisabled(t)">{{ t }}
+				</option>
+			</select>
+		</label>
+		<label>End:
+			<input type="date" [(ngModel)]="desiredDateEnd" (input)="onDesiredChange()"
+				[min]="desiredDateStart || todayString()" />
+			<select [(ngModel)]="desiredTimeEnd" (change)="onDesiredChange()">
+				<option value="">--</option>
+				<option *ngFor="let t of timeOptions" [value]="t" [disabled]="isDesiredEndTimeDisabled(t)">{{ t }}
+				</option>
+			</select>
+		</label>
+		<button (click)="fetchAvailable()">Find Available</button>
 
-    <div class="advanced-filters" *ngIf="searched">
-      <label>Price from: <input type="number" [(ngModel)]="priceFrom" /></label>
-      <label>to: <input type="number" [(ngModel)]="priceTo" /></label>
-      <label>Min seats: <input type="number" [(ngModel)]="minSeats" /></label>
+		<div class="advanced-filters" *ngIf="searched">
+			<label>Price from: <input type="number" [(ngModel)]="priceFrom" /></label>
+			<label>to: <input type="number" [(ngModel)]="priceTo" /></label>
+			<label>Min seats: <input type="number" [(ngModel)]="minSeats" /></label>
 
-      <div class="checkbox-group">
-        <div>Transmission:</div>
-        <label><input type="checkbox" [(ngModel)]="transmissionFilters['manual']" /> manual</label>
-        <label><input type="checkbox" [(ngModel)]="transmissionFilters['automatic']" /> automatic</label>
-      </div>
+			<div class="checkbox-group">
+				<div>Transmission:</div>
+				<label><input type="checkbox" [(ngModel)]="transmissionFilters['manual']" /> manual</label>
+				<label><input type="checkbox" [(ngModel)]="transmissionFilters['automatic']" /> automatic</label>
+			</div>
 
-      <div class="checkbox-group">
-        <div>Fuel:</div>
-        <label><input type="checkbox" [(ngModel)]="fuelFilters['diesel']" /> diesel</label>
-        <label><input type="checkbox" [(ngModel)]="fuelFilters['gasoline']" /> gasoline</label>
-        <label><input type="checkbox" [(ngModel)]="fuelFilters['electric']" /> electric</label>
-        <label><input type="checkbox" [(ngModel)]="fuelFilters['LPG']" /> LPG</label>
-      </div>
-    </div>
-  </div>
+			<div class="checkbox-group">
+				<div>Fuel:</div>
+				<label><input type="checkbox" [(ngModel)]="fuelFilters['diesel']" /> diesel</label>
+				<label><input type="checkbox" [(ngModel)]="fuelFilters['gasoline']" /> gasoline</label>
+				<label><input type="checkbox" [(ngModel)]="fuelFilters['electric']" /> electric</label>
+				<label><input type="checkbox" [(ngModel)]="fuelFilters['LPG']" /> LPG</label>
+			</div>
+		</div>
+	</div>
 
-  <table *ngIf="searched">
-    <thead><tr><th>Vehicle</th><th>Price</th><th></th></tr></thead>
-    <tbody>
-      <tr *ngFor="let u of filtered">
-        <td>
-          {{ u.vehicle.company }} {{ u.vehicle.name }} {{ u.vehicle.year }}
-          <br>
-          {{ u.vehicle.transmission }}
-          <br>
-          {{ u.vehicle.fuel }}
-        </td>
-        <td>{{ computePrice(u) }}</td>
-        <td><button (click)="selectUnit(u)">Select</button></td>
-      </tr>
-    </tbody>
-  </table>
+	<table *ngIf="searched", class="data-table">
+		<thead>
+			<tr>
+				<th>Vehicle</th>
+				<th>Price</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let u of filtered">
+				<td>
+					<p>{{ u.vehicle | vehicleDesc }}</p>
+					<p class="subtitle">{{ u.vehicle.transmission }}</p>
+					<p class="subtitle">{{ u.vehicle.fuel }}</p>
+				</td>
+				<td>{{ computePrice(u) }}</td>
+				<td><button (click)="selectUnit(u)">Select</button></td>
+			</tr>
+		</tbody>
+	</table>
 
-  <div class="booking-form" *ngIf="selectedUnit && searched">
-    <h3>Book unit: {{ selectedUnit.licencePlate }} ({{ selectedUnit.vehicle.name }})</h3>
-    <label>Start:
-      <input type="date" [(ngModel)]="bookingDateStart" [min]="todayString()" (input)="onBookingChange()" />
-      <select [(ngModel)]="bookingTimeStart" (change)="onBookingChange()">
-        <option value="">--</option>
-        <option *ngFor="let t of timeOptions" [value]="t" [disabled]="isBookingStartTimeDisabled(t)">{{ t }}</option>
-      </select>
-    </label>
-    <label>End:
-      <input type="date" [(ngModel)]="bookingDateEnd" [min]="bookingDateStart || todayString()" (input)="onBookingChange()" />
-      <select [(ngModel)]="bookingTimeEnd" (change)="onBookingChange()">
-        <option value="">--</option>
-        <option *ngFor="let t of timeOptions" [value]="t" [disabled]="isBookingEndTimeDisabled(t)">{{ t }}</option>
-      </select>
-    </label>
-    <div><button (click)="createBooking()">Create Booking</button> <button (click)="selectedUnit = undefined">Cancel</button></div>
-  </div>
+	<div class="booking-form" *ngIf="selectedUnit && searched">
+		<h3>Book unit: {{ selectedUnit.licencePlate }} ({{ selectedUnit.vehicle.name }})</h3>
+		<label>Start:
+			<input type="date" [(ngModel)]="bookingDateStart" [min]="todayString()" (input)="onBookingChange()" />
+			<select [(ngModel)]="bookingTimeStart" (change)="onBookingChange()">
+				<option value="">--</option>
+				<option *ngFor="let t of timeOptions" [value]="t" [disabled]="isBookingStartTimeDisabled(t)">{{ t }}
+				</option>
+			</select>
+		</label>
+		<label>End:
+			<input type="date" [(ngModel)]="bookingDateEnd" [min]="bookingDateStart || todayString()"
+				(input)="onBookingChange()" />
+			<select [(ngModel)]="bookingTimeEnd" (change)="onBookingChange()">
+				<option value="">--</option>
+				<option *ngFor="let t of timeOptions" [value]="t" [disabled]="isBookingEndTimeDisabled(t)">{{ t }}
+				</option>
+			</select>
+		</label>
+		<div><button (click)="createBooking()">Create Booking</button> <button
+				(click)="selectedUnit = undefined">Cancel</button></div>
+	</div>
 </div>

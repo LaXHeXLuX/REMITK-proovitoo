@@ -1,16 +1,15 @@
-<div class="vehicle-list">
+<div class="page-container">
 	<div class="toolbar">
-    <label>
-      <input (input)="searchTerm = $any($event.target).value" placeholder="Search by name, company or year" />
-    </label>
+		<!--<label><input type="checkbox" (change)="showCurrent = $any($event.target).checked" /> Show current</label>-->
 		<button (click)="openCreate()">Add Vehicle</button>
-  </div>
-
-	<div *ngIf="showForm">
-		<app-vehicle-form [vehicle]="selectedVehicle" (saved)="onSaved($event)" (closed)="onClosed()"></app-vehicle-form>
 	</div>
 
-	<table class="vehicles">
+	<div *ngIf="showForm">
+		<app-vehicle-form [vehicle]="selectedVehicle" (saved)="onSaved($event)" (closed)="onClosed()">
+		</app-vehicle-form>
+	</div>
+
+	<table class="data-table">
 		<thead>
 			<tr>
 				<th>Name</th>
@@ -24,15 +23,15 @@
 		</thead>
 		<tbody>
 			<tr *ngFor="let v of filteredVehicles">
-				<td>{{ v.name }}</td>
+				<td><strong>{{ v.name }}</strong></td>
 				<td>{{ v.company }}</td>
 				<td>{{ v.numberOfSeats }}</td>
 				<td>{{ v.fuel }}</td>
 				<td>{{ v.transmission }}</td>
 				<td>{{ v.year }}</td>
 				<td>
-					<button (click)="openEdit(v)">Edit</button>
-					<button (click)="deleteVehicle(v.id)">Delete</button>
+					<button class="btn-icon" (click)="openEdit(v)">Edit</button>
+					<button class="btn-icon btn-danger" (click)="deleteVehicle(v.id)">Delete</button>
 				</td>
 			</tr>
 		</tbody>

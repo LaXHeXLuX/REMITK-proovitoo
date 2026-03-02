@@ -1,0 +1,54 @@
+<div class="form-card">
+	<h3>{{ isEdit ? 'Edit Vehicle' : 'Add Vehicle' }}</h3>
+
+	<div *ngIf="formError" class="alert-error">
+		{{ formError }}
+	</div>
+
+	<div class="form-grid">
+		<div class="form-group">
+			<label>Vehicle Name</label>
+			<input [(ngModel)]="formName" placeholder="e.g. Tesla Model 3" />
+		</div>
+
+		<div class="form-group">
+			<label>Company/Brand</label>
+			<input [(ngModel)]="formCompany" placeholder="e.g. Hertz" />
+		</div>
+
+		<div class="form-group">
+			<label>Number of Seats</label>
+			<input type="number" [(ngModel)]="formSeats" />
+		</div>
+
+		<div class="form-group">
+			<label>Year</label>
+			<input type="number" [(ngModel)]="formYear" />
+		</div>
+
+		<div class="form-group">
+			<label>Fuel Type</label>
+			<select [(ngModel)]="formFuel">
+				<option value="diesel">Diesel</option>
+				<option value="gasoline">Gasoline</option>
+				<option value="electric">Electric</option>
+				<option value="LPG">LPG</option>
+			</select>
+		</div>
+
+		<div class="form-group">
+			<label>Transmission</label>
+			<select [(ngModel)]="formTransmission">
+				<option value="manual">Manual</option>
+				<option value="automatic">Automatic</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-actions">
+		<button (click)="cancel()">Cancel</button>
+		<button class="btn-primary" (click)="save()">
+			{{ isEdit ? 'Save Changes' : 'Create Vehicle' }}
+		</button>
+	</div>
+</div>
