@@ -5,6 +5,7 @@ import { UnitService } from '../../services/unit';
 import { BookingService } from '../../services/booking';
 import { Unit } from '../../models/unit';
 import { VehicleDescriptionPipe } from '../../pipes/vehicle-description-pipe';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
 	selector: 'app-bookable-units',
@@ -40,7 +41,10 @@ export class BookableUnits implements OnInit {
 	bookingDateEnd: string = '';
 	bookingTimeEnd: string = '';
 
-	constructor(private unitService: UnitService, private bookingService: BookingService, private cdr: ChangeDetectorRef) {
+	clientName: string = '';
+	formError: string = '';
+
+	constructor(private unitService: UnitService, private bookingService: BookingService, private cdr: ChangeDetectorRef, private notif: NotificationService) {
 		this.timeOptions = this.generateTimeOptions();
 	}
 
@@ -52,7 +56,10 @@ export class BookableUnits implements OnInit {
 		this.desiredEnd = `${this.desiredDateEnd}T${this.desiredTimeEnd}`;
 		this.unitService.getAvailable(this.desiredStart, this.desiredEnd).subscribe({
 			next: (data) => { this.units = data; this.searched = true; this.cdr.detectChanges(); },
-			error: (err) => { console.error('Error loading available vehicles', err); alert('Error loading available vehicles'); }
+			error: (err) => { 
+				this.formError = 'Error loading available vehicles';
+				this.notif.showError(this.formError);
+			}
 		});
 	}
 
@@ -216,17 +223,25 @@ export class BookableUnits implements OnInit {
 			this.bookingEnd = `${this.bookingDateEnd}T${this.bookingTimeEnd}`;
 		}
 		if (!this.bookingStart || !this.bookingEnd) return alert('Specify start and end');
-		const clientName = prompt('Enter your name:');
-		if (!clientName) return alert('Client name is required');
+		if (!this.clientName || this.clientName.length == 0) return alert('Client name is required');
 		const payload = {
-			clientName,
+			clientName: this.clientName,
 			unit: { id: this.selectedUnit.id },
 			bookingStart: this.bookingStart,
 			bookingEnd: this.bookingEnd,
 		};
 		this.bookingService.createBooking(payload as any).subscribe({
-			next: () => { alert('Booking created'); this.selectedUnit = undefined; this.bookingStart = ''; this.bookingEnd = ''; if (this.desiredStart && this.desiredEnd) this.fetchAvailable(); },
-			error: (err) => { console.error('Error creating booking', err); alert('Error creating booking'); }
+			next: () => { 
+				this.notif.showSuccess('Booking created');
+				this.selectedUnit = undefined; 
+				this.bookingStart = ''; 
+				this.bookingEnd = ''; 
+				if (this.desiredStart && this.desiredEnd) this.fetchAvailable(); 
+			},
+			error: (err) => { 
+				this.formError = 'Error creating booking';
+				this.notif.showError(this.formError);
+			}
 		});
 	}
 

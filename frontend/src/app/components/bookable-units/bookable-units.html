@@ -64,6 +64,9 @@
 	</table>
 
 	<div class="booking-form" *ngIf="selectedUnit && searched">
+		<div *ngIf="formError" class="alert-error">
+			{{ formError }}
+		</div>
 		<h3>Book unit: {{ selectedUnit.licencePlate }} ({{ selectedUnit.vehicle.name }})</h3>
 		<label>Start:
 			<input type="date" [(ngModel)]="bookingDateStart" [min]="todayString()" (input)="onBookingChange()" />
@@ -81,6 +84,9 @@
 				<option *ngFor="let t of timeOptions" [value]="t" [disabled]="isBookingEndTimeDisabled(t)">{{ t }}
 				</option>
 			</select>
+		</label>
+		<label>Your name:
+			<input type="text" [(ngModel)]="clientName">
 		</label>
 		<div><button (click)="createBooking()">Create Booking</button> <button
 				(click)="selectedUnit = undefined">Cancel</button></div>
