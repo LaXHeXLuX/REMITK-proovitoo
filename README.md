@@ -22,21 +22,31 @@ Andmebaas on disainitud võimalikult piiravalt - olemas on ainult need veerud, m
 - *service* klass ühendab omavahel *controller* ja *repository* klassi ja sisaldab andmekäsitlusloogikat, kui seda vaja on. 
 - *controller* klass loob ühenduse REST API-ga.
 - *GlobalExceptionHandler* käsitleb vigu ning tagastab sobiva teatega HTTP staatuse.
+- *WebConfig* lubab http://localhost:4200 pärit päringutele vastata.
 - *VehicleBookingApplication* paneb rakenduse käima.
 
 ### Front-end
-Ei ole veel teinud. TODO!
+Front-endi kood koosneb .html, .css, .ts failidest ja on jagunenud järgmiselt:
+- veebilehe põhifailid: index.html, styles.css, main.ts.
+- app failid: järgmine tase allapoole peale põhifaile.
+- *models* kaust - andmeobjektid.
+- *services* kaust - suhtlus front-endi ja API vahel (samuti `notification.service.ts`: service fail teavituste jaoks veebilehel).
+- *components* kaust - angulari komponendid, millest veebileht moodustub.
 
 ## Käivitusjuhised
 1. Veendu, et sinu Postgresi server töötab.
 2. Loo andmebaas nimega `vehicle_booking`: `CREATE DATABASE vehicle_booking;`.
 3. Muuda failis [application.properties](backend/src/main/resources/application.properties) vajadusel `spring.datasource` muutujaid.
 4. Käivitamine:
-   - **IDE**: ava fail [VehicleBookingApplication.java](backend/src/main/java/ee/vehicleBooking/vehicleBooking/VehicleBookingApplication.java) ja vajuta "Run".
-   - **Käsurida (CLI)**: `./mvnw spring-boot:run`
+      - backend:
+        - **IDE**: ava fail [VehicleBookingApplication.java](backend/src/main/java/ee/vehicleBooking/vehicleBooking/VehicleBookingApplication.java) ja vajuta "Run".
+        - **Käsurida (CLI)**: `cd backend`, seejärel `../mvnw spring-boot:run`
+      - frontend:
+        - **Käsurida (CLI)**: `cd frontend`, seejärel `npm start` või `ng serve --proxy-config proxy.conf.json`.  
+        Probleemide korral võib aidata angulari [README.md](frontend/README.md)
 
 ### API testimine
-API access point: http://localhost:8080/api
+API access point: http://localhost:8080/api  
 Alguses API testimiseks järgi seda nimekirja:
 - GET http://localhost:8080/api/vehicles - vastus peaks olema `[]` (200 OK)
 - POST http://localhost:8080/api/vehicles, body `{}` - vastuses peaks olema nimekiri kõikidest erroritest kehas (400 Bad Request)
@@ -61,6 +71,6 @@ vastuseks peaks olema loodud objekt (201 Created)
 
 ## Edasiarenduse võimalused
 - Suurem testide katvus
-- Autentimine
+- Autentimine (nii API kui frontend)
 - Läbimõeldud logimine
-- Booking tabelisse veerg `next_booking_start`
+- Nõuda puhveraega ühe sõiduki kahe broneeringu vahel
