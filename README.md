@@ -6,9 +6,9 @@
 5. [Edasiarenduse võimalused](#edasiarenduse-võimalused)
 
 ## Projekti kirjeldus
-Projekt *VehicleBooking* võimaldab hallata broneeritavaid sõidukeid. 
-Andmebaas: Postgres
-Back-end: Java Spring
+Projekt *VehicleBooking* võimaldab hallata broneeritavaid sõidukeid.  
+Andmebaas: Postgres  
+Back-end: Java Spring  
 Front-end: Angular
 
 ## Arhitektuur
