@@ -232,12 +232,12 @@ export class BookableUnits implements OnInit {
 			this.notif.showError('Specify start and end');
 			return;
 		}
-		if (!this.clientName || this.clientName.length == 0) {
+		if (!this.clientName || this.clientName.trim().length == 0) {
 			this.notif.showError('Client name is required');
 			return;
 		}
 		const payload = {
-			clientName: this.clientName,
+			clientName: this.clientName.trim(),
 			unit: { id: this.selectedUnit.id },
 			bookingStart: this.bookingStart,
 			bookingEnd: this.bookingEnd,

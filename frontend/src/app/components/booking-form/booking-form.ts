@@ -63,7 +63,7 @@ export class BookingForm implements OnChanges {
 			this.notif.showError(this.formError);
 			return;
 		}
-		if ((this.isEdit && this.formClientName == null) || this.formClientName.length == 0) {
+		if ((this.isEdit && this.formClientName == null) || this.formClientName.trim().length == 0) {
 			this.formError = 'Client name is required';
 			this.notif.showError(this.formError);
 			return;
@@ -86,7 +86,7 @@ export class BookingForm implements OnChanges {
 		if (this.isEdit && this.booking?.id) {
 			const patchPayload: any = {
 				// PATCH only sends fields that are being updated; include vin if changed
-				clientName: this.formClientName || null,
+				clientName: this.formClientName.trim() || null,
 				unit: this.formUnitId || null,
 				bookingStart: this.formBookingStart || null,
 				bookingEnd: this.formBookingEnd || null
@@ -97,7 +97,7 @@ export class BookingForm implements OnChanges {
 			});
 		} else {
 			const createPayload: any = {
-				clientName: this.formClientName,
+				clientName: this.formClientName.trim(),
 				unit: this.formUnitId,
 				bookingStart: this.formBookingStart,
 				bookingEnd: this.formBookingEnd
