@@ -167,17 +167,6 @@ button.btn-primary:hover {
 	padding-top: 1.5rem;
 }
 
-/* Error Styling */
-.alert-error {
-	background-color: #fef2f2;
-	border-left: 4px solid #dc2626;
-	color: #991b1b;
-	padding: 1rem;
-	margin-bottom: 1.5rem;
-	font-size: 0.9rem;
-	border-radius: 4px;
-}
-
 /* Form Action Alignment */
 .form-actions {
 	display: flex;

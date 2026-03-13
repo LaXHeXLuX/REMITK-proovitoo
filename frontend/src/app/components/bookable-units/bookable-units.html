@@ -64,9 +64,6 @@
 	</table>
 
 	<div class="booking-form" *ngIf="selectedUnit && searched">
-		<div *ngIf="formError" class="alert-error">
-			{{ formError }}
-		</div>
 		<h3>Book unit: {{ selectedUnit.licencePlate }} ({{ selectedUnit.vehicle.name }})</h3>
 		<label>Start:
 			<input type="date" [(ngModel)]="bookingDateStart" [min]="todayString()" (input)="onBookingChange()" />
