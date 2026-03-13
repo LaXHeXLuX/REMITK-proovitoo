@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Booking } from '../../models/booking';
 import { BookingService } from '../../services/booking';
-import { Unit } from '../../models/unit';
 import { UnitService } from '../../services/unit';
 import { NotificationService } from '../../services/notification.service';
+import { DateTimePickerComponent } from '../date-time-picker/date-time-picker.component';
 
 @Component({
 	selector: 'app-booking-form',
 	standalone: true,
-	imports: [CommonModule, FormsModule],
+	imports: [CommonModule, FormsModule, DateTimePickerComponent],
 	templateUrl: './booking-form.html'
 })
 export class BookingForm implements OnChanges {
@@ -22,8 +22,12 @@ export class BookingForm implements OnChanges {
 	units: any[] = [];
 	formUnitId?: number;
 	formClientName: string = '';
-	formBookingStart?: Date;
-	formBookingEnd?: Date;
+	formBookingStart: string = '';
+	formBookingEnd: string = '';
+	formBookingDateStart: string = '';
+	formBookingTimeStart: string = '';
+	formBookingDateEnd: string = '';
+	formBookingTimeEnd: string = '';
 	formError = '';
 
 	constructor(private bookingService: BookingService, private unitService: UnitService, private notif: NotificationService, private cdr: ChangeDetectorRef) {
@@ -42,20 +46,38 @@ export class BookingForm implements OnChanges {
 		return this.units.filter(u => u.bookable === true);
 	}
 
+	onDateChange(): void {
+		this.formBookingStart = `${this.formBookingDateStart}T${this.formBookingTimeStart}`;
+		this.formBookingEnd = `${this.formBookingDateEnd}T${this.formBookingTimeEnd}`;
+	}
+
+	toLocalISO(d: Date): string {
+    // getTimezoneOffset returns minutes; convert to milliseconds
+    const offset = d.getTimezoneOffset() * 60000; 
+    const localDate = new Date(d.getTime() - offset);
+    
+    // Returns "2026-03-14T01:34" -> change 'T' to space
+    return localDate.toISOString().slice(0, 16).replace('T', ' ');
+}
+
 	private loadFromInput() {
 		if (this.booking) {
 			this.isEdit = true;
 			this.formUnitId = this.booking.unit?.id;
 			this.formClientName = this.booking.clientName;
-			this.formBookingStart = new Date(this.booking.bookingStart);
-			this.formBookingEnd = new Date(this.booking.bookingEnd);
+			this.formBookingStart = this.toLocalISO(this.booking.bookingStart);
+			console.log(this.formBookingStart);
+			[this.formBookingDateStart, this.formBookingTimeStart] = this.formBookingStart.split(' ');
+			console.log(this.formBookingTimeStart);
+			this.formBookingEnd = this.toLocalISO(this.booking.bookingEnd);
+			[this.formBookingDateEnd, this.formBookingTimeEnd] = this.formBookingEnd.split(' ');
 			this.formError = '';
 		} else {
 			this.isEdit = false;
 			this.formUnitId = undefined;
 			this.formClientName = '';
-			this.formBookingStart = undefined;
-			this.formBookingEnd = undefined;
+			this.formBookingStart = '';
+			this.formBookingEnd = '';
 			this.formError = '';
 		}
 	}
@@ -91,7 +113,7 @@ export class BookingForm implements OnChanges {
 			const patchPayload: any = {
 				// PATCH only sends fields that are being updated; include vin if changed
 				clientName: this.formClientName.trim() || null,
-				unit: this.formUnitId || null,
+				unit: { id: this.formUnitId || null },
 				bookingStart: this.formBookingStart || null,
 				bookingEnd: this.formBookingEnd || null
 			};
@@ -102,7 +124,7 @@ export class BookingForm implements OnChanges {
 		} else {
 			const createPayload: any = {
 				clientName: this.formClientName.trim(),
-				unit: this.formUnitId,
+				unit: { id: this.formUnitId || null },
 				bookingStart: this.formBookingStart,
 				bookingEnd: this.formBookingEnd
 			};

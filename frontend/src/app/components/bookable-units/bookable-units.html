@@ -2,22 +2,23 @@
 	<h2>Available vehicles</h2>
 
 	<div class="filters">
-		<label>Start:
-			<input type="date" [(ngModel)]="desiredDateStart" (input)="onDesiredChange()" [min]="todayString()" />
-			<select [(ngModel)]="desiredTimeStart" (change)="onDesiredChange()">
-				<option value="">--</option>
-				<option *ngFor="let t of timeOptions" [value]="t" [disabled]="isDesiredStartTimeDisabled(t)">{{ t }}
-				</option>
-			</select>
+		<label class="date-picker-label">
+			<span>Start:</span>
+			<app-date-time-picker 
+				[(dateValue)]="desiredDateStart" 
+				[(timeValue)]="desiredTimeStart"
+				minAfter="now"
+				(dateTimeChange)="onDesiredChange()">
+			</app-date-time-picker>
 		</label>
-		<label>End:
-			<input type="date" [(ngModel)]="desiredDateEnd" (input)="onDesiredChange()"
-				[min]="desiredDateStart || todayString()" />
-			<select [(ngModel)]="desiredTimeEnd" (change)="onDesiredChange()">
-				<option value="">--</option>
-				<option *ngFor="let t of timeOptions" [value]="t" [disabled]="isDesiredEndTimeDisabled(t)">{{ t }}
-				</option>
-			</select>
+		<label class="date-picker-label">
+			<span>End:</span>
+			<app-date-time-picker 
+				[(dateValue)]="desiredDateEnd" 
+				[(timeValue)]="desiredTimeEnd"
+				[minAfter]="desiredDateStart + ' ' + desiredTimeStart"
+				(dateTimeChange)="onDesiredChange()">
+			</app-date-time-picker>
 		</label>
 		<button (click)="fetchAvailable()">Find Available</button>
 

@@ -6,11 +6,12 @@ import { BookingService } from '../../services/booking';
 import { Unit } from '../../models/unit';
 import { VehicleDescriptionPipe } from '../../pipes/vehicle-description-pipe';
 import { NotificationService } from '../../services/notification.service';
+import { DateTimePickerComponent } from '../date-time-picker/date-time-picker.component';
 
 @Component({
 	selector: 'app-bookable-units',
 	standalone: true,
-	imports: [CommonModule, FormsModule, VehicleDescriptionPipe],
+	imports: [CommonModule, FormsModule, VehicleDescriptionPipe, DateTimePickerComponent],
 	templateUrl: './bookable-units.html',
 	styleUrls: ['./bookable-units.css'],
 })

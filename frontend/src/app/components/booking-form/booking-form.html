@@ -17,15 +17,24 @@
 			<input [(ngModel)]="formClientName" placeholder="e.g. John Doe" />
 		</div>
 
-		<div class="form-group">
-			<label>Pickup Date</label>
-			<input type="date" [(ngModel)]="formBookingStart" />
-		</div>
+		<label class="date-picker-label">
+			<span>Start:</span>
+			<app-date-time-picker 
+				[(dateValue)]="formBookingDateStart" 
+				[(timeValue)]="formBookingTimeStart"
+				(dateTimeChange)="onDateChange()">
+			</app-date-time-picker>
+		</label>
 
-		<div class="form-group">
-			<label>Return Date</label>
-			<input type="date" [(ngModel)]="formBookingEnd" />
-		</div>
+		<label class="date-picker-label">
+			<span>End:</span>
+			<app-date-time-picker 
+				[(dateValue)]="formBookingDateEnd" 
+				[(timeValue)]="formBookingTimeEnd"
+				[minAfter]="formBookingDateStart + ' ' + formBookingTimeStart"
+				(dateTimeChange)="onDateChange()">
+			</app-date-time-picker>
+		</label>
 	</div>
 
 	<div class="form-actions">
