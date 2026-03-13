@@ -115,8 +115,6 @@ export class BookingForm implements OnChanges {
 			if (this.formClientName) {
 				patchPayload['clientName'] = this.formClientName.trim();
 			}
-				
-			console.log(patchPayload);
 			this.bookingService.patchBooking(this.booking.id, patchPayload).subscribe({
 				next: b => { this.notif.showSuccess('Booking updated'); this.saved.emit(b); },
 				error: e => { console.error(e); this.notif.showError('Error updating booking'); }
