@@ -6,8 +6,8 @@
 			<label>Assigned Vehicle Unit</label>
 			<select [(ngModel)]="formUnitId">
 				<option [ngValue]="undefined">-- Select Available Unit --</option>
-				<option *ngFor="let u of units" [ngValue]="u.id">
-					{{ u.vehicle.name }} ({{ u.licence }})
+				<option *ngFor="let u of availableUnits" [ngValue]="u.id">
+					{{ u.vehicle.name }} ({{ u.licencePlate || '-' }})
 				</option>
 			</select>
 		</div>

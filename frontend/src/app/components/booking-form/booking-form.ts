@@ -38,6 +38,10 @@ export class BookingForm implements OnChanges {
 		this.unitService.getUnits().subscribe({ next: u => { this.units = u; this.cdr.detectChanges(); }, error: e => console.error(e) });
 	}
 
+	get availableUnits() {
+		return this.units.filter(u => u.bookable === true);
+	}
+
 	private loadFromInput() {
 		if (this.booking) {
 			this.isEdit = true;
@@ -102,6 +106,7 @@ export class BookingForm implements OnChanges {
 				bookingStart: this.formBookingStart,
 				bookingEnd: this.formBookingEnd
 			};
+			console.log(createPayload)
 			this.bookingService.createBooking(createPayload as Booking).subscribe({
 				next: b => { this.notif.showSuccess('Booking created'); this.saved.emit(b); },
 				error: e => { console.error(e); this.notif.showError('Error creating booking'); }
