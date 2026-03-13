@@ -66,9 +66,7 @@ export class BookingForm implements OnChanges {
 			this.formUnitId = this.booking.unit?.id;
 			this.formClientName = this.booking.clientName;
 			this.formBookingStart = this.toLocalISO(this.booking.bookingStart);
-			console.log(this.formBookingStart);
 			[this.formBookingDateStart, this.formBookingTimeStart] = this.formBookingStart.split(' ');
-			console.log(this.formBookingTimeStart);
 			this.formBookingEnd = this.toLocalISO(this.booking.bookingEnd);
 			[this.formBookingDateEnd, this.formBookingTimeEnd] = this.formBookingEnd.split(' ');
 			this.formError = '';
@@ -111,12 +109,14 @@ export class BookingForm implements OnChanges {
 		}
 		if (this.isEdit && this.booking?.id) {
 			const patchPayload: any = {
-				// PATCH only sends fields that are being updated; include vin if changed
-				clientName: this.formClientName.trim() || null,
-				unit: { id: this.formUnitId || null },
-				bookingStart: this.formBookingStart || null,
-				bookingEnd: this.formBookingEnd || null
+				bookingStart: this.formBookingStart.replace(' ', 'T') + ':00',
+				bookingEnd: this.formBookingEnd.replace(' ', 'T') + ':00'
 			};
+			if (this.formClientName) {
+				patchPayload['clientName'] = this.formClientName.trim();
+			}
+				
+			console.log(patchPayload);
 			this.bookingService.patchBooking(this.booking.id, patchPayload).subscribe({
 				next: b => { this.notif.showSuccess('Booking updated'); this.saved.emit(b); },
 				error: e => { console.error(e); this.notif.showError('Error updating booking'); }
@@ -128,7 +128,6 @@ export class BookingForm implements OnChanges {
 				bookingStart: this.formBookingStart,
 				bookingEnd: this.formBookingEnd
 			};
-			console.log(createPayload)
 			this.bookingService.createBooking(createPayload as Booking).subscribe({
 				next: b => { this.notif.showSuccess('Booking created'); this.saved.emit(b); },
 				error: e => { console.error(e); this.notif.showError('Error creating booking'); }

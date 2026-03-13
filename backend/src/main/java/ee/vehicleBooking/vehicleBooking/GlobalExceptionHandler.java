@@ -1,5 +1,6 @@
 package ee.vehicleBooking.vehicleBooking;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -62,6 +63,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TransientPropertyValueException.class)
     public ResponseEntity<ApiErrorResponse> handleTransient(TransientPropertyValueException ex, HttpServletRequest request) {
         String message = String.format("Field '%s' requires a valid existing ID", ex.getPropertyName());
+        return buildResponse(HttpStatus.BAD_REQUEST, message, request, errorList(ex));
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleTransient(EntityNotFoundException ex, HttpServletRequest request) {
+        String[] path = request.getRequestURI().split("/");
+        String message = String.format("Entity with id %s not found", path[path.length-1]);
         return buildResponse(HttpStatus.BAD_REQUEST, message, request, errorList(ex));
     }
 
