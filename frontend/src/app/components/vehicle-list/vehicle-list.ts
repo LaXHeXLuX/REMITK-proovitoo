@@ -1,20 +1,22 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Vehicle } from '../../models/vehicle';
 import { VehicleService } from '../../services/vehicle';
 import { NotificationService } from '../../services/notification.service';
 import { VehicleForm } from '../vehicle-form/vehicle-form';
+import { matchVehicle } from '../../utils';
 
 @Component({
 	selector: 'app-vehicle-list',
 	standalone: true,
-	imports: [CommonModule, VehicleForm],
+	imports: [CommonModule, VehicleForm, FormsModule],
 	templateUrl: './vehicle-list.html',
 	styleUrls: ['../data-list.css']
 })
 export class VehicleList implements OnInit {
 	vehicles: Vehicle[] = [];
-	searchTerm: string = '';
+	searchText: string = '';
 
 	// form host
 	showForm = false;
@@ -36,14 +38,10 @@ export class VehicleList implements OnInit {
 		});
 	}
 
-	get filteredVehicles(): Vehicle[] {
-		const term = this.searchTerm?.toLowerCase().trim();
+	get filtered(): Vehicle[] {
+		const term = this.searchText?.toLowerCase().trim();
 		if (!term) return this.vehicles;
-		return this.vehicles.filter(v =>
-			v.name.toLowerCase().includes(term) ||
-			v.company.toLowerCase().includes(term) ||
-			String(v.year).includes(term)
-		);
+		return this.vehicles.filter(v => matchVehicle(term, v));
 	}
 
 	deleteVehicle(id?: number): void {

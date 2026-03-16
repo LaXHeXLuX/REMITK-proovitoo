@@ -1,6 +1,6 @@
 <div class="page-container">
 	<div class="toolbar">
-		<!--<label><input type="checkbox" (change)="showCurrent = $any($event.target).checked" /> Show current</label>-->
+		<label><input class="search-input" type="text" [(ngModel)]="searchText" placeholder="Search"></label>
 		<button (click)="openCreate()">Add Vehicle</button>
 	</div>
 
@@ -22,7 +22,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr *ngFor="let v of filteredVehicles">
+			<tr *ngFor="let v of filtered">
 				<td><strong>{{ v.name }}</strong></td>
 				<td>{{ v.company }}</td>
 				<td>{{ v.numberOfSeats }}</td>

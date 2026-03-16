@@ -1,5 +1,6 @@
 <div class="page-container">
 	<div class="toolbar">
+		<label><input class="search-input" type="text" [(ngModel)]="searchText" placeholder="Search"></label>
 		<label><input type="checkbox" (change)="showCurrent = $any($event.target).checked" /> Show current</label>
 		<button (click)="openCreate()">Add Booking</button>
 	</div>

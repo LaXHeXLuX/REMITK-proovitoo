@@ -1,20 +1,23 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { UnitService } from '../../services/unit';
 import { Unit } from '../../models/unit';
 import { NotificationService } from '../../services/notification.service';
 import { UnitForm } from '../unit-form/unit-form';
+import { matchUnit } from '../../utils';
 
 @Component({
 	selector: 'app-unit-list',
 	standalone: true,
-	imports: [CommonModule, UnitForm],
+	imports: [CommonModule, UnitForm, FormsModule],
 	templateUrl: './unit-list.html',
 	styleUrls: ['../data-list.css']
 })
 export class UnitList implements OnInit {
 	units: Unit[] = [];
 	showOnlyBookable = false;
+	searchText: string = '';
 	showForm = false;
 	selectedUnit?: Unit | null = null;
 
@@ -35,8 +38,15 @@ export class UnitList implements OnInit {
 	}
 
 	get filtered(): Unit[] {
-		if (!this.showOnlyBookable) return this.units;
-		return this.units.filter((u) => u.bookable);
+		let filteredUnits = this.units;
+		if (this.showOnlyBookable) {
+			filteredUnits = filteredUnits.filter((u) => u.bookable);
+		}
+		const term = this.searchText?.toLowerCase().trim();
+		if (term) {
+			filteredUnits = filteredUnits.filter((u) => matchUnit(term, u))
+		}
+		return filteredUnits;
 	}
 
 	deleteUnit(id?: number): void {
