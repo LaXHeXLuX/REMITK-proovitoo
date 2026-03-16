@@ -26,6 +26,7 @@ a {
 button {
 	cursor: pointer;
 	padding: 8px 16px;
+	margin: 5px;
 	border-radius: var(--radius);
 	border: 1px solid var(--border);
 	background: var(--bg-card);
@@ -52,7 +53,6 @@ button.btn-primary:hover {
 	background: var(--bg-card);
 	border-radius: var(--radius);
 	overflow: hidden;
-	/* Clips corners of the table */
 	box-shadow: var(--shadow);
 }
 
@@ -74,17 +74,15 @@ button.btn-primary:hover {
 	background-color: #fafafc;
 }
 
-/* Standard Container for all List Pages */
 .page-container {
 	max-width: 1200px;
 	margin: 2rem auto;
 	padding: 0 1rem;
 }
 
-/* The Top Bar (Search + Action Button) */
 .toolbar {
 	display: flex;
-	justify-content: space-between;
+	justify-content: left;
 	align-items: center;
 	margin-bottom: 1.5rem;
 	gap: 1rem;
@@ -105,7 +103,6 @@ button.btn-primary:hover {
 	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-/* Action Buttons (Edit/Delete) in Table */
 .btn-icon {
 	padding: 4px 8px;
 	font-size: 0.85rem;
@@ -121,7 +118,6 @@ button.btn-primary:hover {
 	background: #fef2f2;
 }
 
-/* Standard Form Layout */
 .form-card {
 	background: var(--bg-card);
 	padding: 2rem;
@@ -134,7 +130,6 @@ button.btn-primary:hover {
 .form-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	/* Two columns */
 	gap: 1.5rem;
 }
 
@@ -167,7 +162,6 @@ button.btn-primary:hover {
 	padding-top: 1.5rem;
 }
 
-/* Form Action Alignment */
 .form-actions {
 	display: flex;
 	justify-content: flex-end;
@@ -177,7 +171,6 @@ button.btn-primary:hover {
 	border-top: 1px solid var(--border);
 }
 
-/* Responsive Grid: Switch to 1 column on mobile */
 @media (max-width: 600px) {
 	.form-grid {
 		grid-template-columns: 1fr;
@@ -207,11 +200,9 @@ button.btn-primary:hover {
 
 .checkbox-group {
 	flex-direction: row !important;
-	/* Override the column layout */
 	align-items: center;
 	gap: 10px;
 	padding-top: 1.5rem;
-	/* Aligns it visually with the other row's inputs */
 }
 
 .checkbox-group input {
@@ -229,6 +220,6 @@ button.btn-primary:hover {
 
 .date-picker-label {
     display: flex;
-    align-items: center; /* Vertically centers "Start:" with the inputs */
-    gap: 10px;           /* Adds space between the word "Start:" and the picker */
+    align-items: center;
+    gap: 10px;
 }
